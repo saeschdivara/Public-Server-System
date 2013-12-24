@@ -4,6 +4,8 @@ QT       -= gui
 
 TEMPLATE = lib
 
+DEFINES += PUBLIC_SERVER_SYSTEM_LIBRARY
+
 QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11
 
@@ -26,3 +28,6 @@ DEPENDPATH += $$PWD/../3rdparty/arangodb-driver/src
 
 INCLUDEPATH += $$PWD/../3rdparty/grantlee/src/
 DEPENDPATH += $$PWD/../3rdparty/grantlee/src/
+
+HEADERS += \
+    public_server_system_globals.h
