@@ -81,7 +81,7 @@ bool Server::listenOnNormalConnections(const QHostAddress &address, quint16 port
     bool isListening = d->normalServer->listen(address, port);
 
     if (!isListening) {
-            qWarning() << "The server couldn't listen (" << d->normalServer->errorString() << ")";
+            qWarning() << "The server couldn't listen";
         }
 
     return isListening;
@@ -104,7 +104,7 @@ bool Server::listenOnSecureConnections(const QHostAddress &address, quint16 port
     bool isListening = d->secureServer->listen(address, port);
 
     if (!isListening) {
-            qWarning() << "The server couldn't listen (" << d->secureServer->errorString() << ")";
+            qWarning() << "The server couldn't listen";
         }
 
     return isListening;
