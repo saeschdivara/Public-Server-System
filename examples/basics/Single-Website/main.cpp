@@ -21,11 +21,48 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include <QCoreApplication>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtNetwork/QSslCertificate>
+#include <QtNetwork/QSslKey>
+
+#include <system/core/System.h>
+#include <system/web/Server.h>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
+    PublicServerSystem::Core::System sys(&app);
 
-    return a.exec();
+    // Commandline arguments
+    QStringList arguments = app.arguments();
+
+    PublicServerSystem::Web::Server * webserver = new PublicServerSystem::Web::Server;
+    // Now listens to both http and https requests not on the default ports
+    // Normal http server
+    webserver->listenOnNormalConnections(QHostAddress::Any, 8080);
+
+    // Https server
+    QFile certificateFile(arguments.at(1));
+    certificateFile.open(QIODevice::ReadOnly);
+
+    QFile keyFile(arguments.at(2));
+    keyFile.open(QIODevice::ReadOnly);
+
+    QSslCertificate certificate(&certificateFile);
+    QSslKey key(&keyFile, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, arguments.at(3).toUtf8());
+
+    qDebug() << certificate << "\n" << key << "\n" << arguments;
+    webserver->setPrivateKey(key);
+    webserver->setLocalCertificate(certificate);
+    webserver->listenOnSecureConnections(QHostAddress::Any, 9080);
+
+    certificateFile.close();
+    keyFile.close();
+
+    // Add server to the system
+    sys.addServer(webserver);
+
+    return sys.startUp();
 }

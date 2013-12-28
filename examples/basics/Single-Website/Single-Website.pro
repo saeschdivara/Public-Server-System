@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core network
 
 QT       -= gui
 
@@ -41,3 +41,6 @@ DEPENDPATH += $$PWD/../../../3rdparty/arangodb-driver/src
 
 INCLUDEPATH += $$PWD/../../../3rdparty/grantlee/src/
 DEPENDPATH += $$PWD/../../../3rdparty/grantlee/src/
+
+INCLUDEPATH += $$PWD/../../../src/
+DEPENDPATH += $$PWD/../../../src/
