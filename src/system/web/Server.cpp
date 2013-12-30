@@ -31,7 +31,10 @@
 #include <httpserverresponse.h>
 #include <url.h>
 // Qt
+#include <QtCore/QBuffer>
 #include <QtCore/QHash>
+#include <QtCore/QTextCodec>
+#include <QtCore/QTextStream>
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
@@ -140,6 +143,22 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
     try {
         View::ViewInterface * view = site->view(url.path());
+
+        QBuffer buffer;
+        buffer.open(QIODevice::ReadWrite);
+
+        QTextStream stream(&buffer);
+
+        stream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+        view->render(stream);
+
+        buffer.close();
+
+        QByteArray renderedView = buffer.data();
+
+        response->writeHead(Tufao::HttpServerResponse::OK);
+        response->end(renderedView);
     }
     catch(Core::Exception ex) {
         response->writeHead(Core::errorCodeToStatusCode(ex.code()));

@@ -26,6 +26,8 @@
 
 #include "public_server_system_globals.h"
 
+#include <QtCore/QTextStream>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -37,6 +39,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
 {
     public:
         virtual ~ViewInterface() {}
+
+        virtual void render(QTextStream & stream) = 0;
 };
 
 }

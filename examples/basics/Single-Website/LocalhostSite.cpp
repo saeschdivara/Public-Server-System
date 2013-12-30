@@ -25,7 +25,17 @@
 
 #include <system/web/AbstractSite_p.h>
 
+class IndexView : public PublicServerSystem::Web::View::ViewInterface
+{
+        // ViewInterface interface
+    public:
+        virtual void render(QTextStream &stream) {
+            stream << "<html><head></head><body><h1>HALOO</h1></body></html>";
+        }
+};
+
 LocalhostSite::LocalhostSite(QObject *parent) :
     PublicServerSystem::Web::AbstractSite(parent)
 {
+    addView("/index", new IndexView);
 }
