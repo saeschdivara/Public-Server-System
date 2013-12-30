@@ -30,7 +30,7 @@ class IndexView : public PublicServerSystem::Web::View::ViewInterface
         // ViewInterface interface
     public:
         virtual void render(QTextStream &stream) {
-            stream << "<html><head></head><body><h1>HALOO</h1></body></html>";
+            stream << QStringLiteral("<html><head><meta charset=\"utf-8\"> </head><body><h1>HäLOO</h1></body></html>");
         }
 };
 
