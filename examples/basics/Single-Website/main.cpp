@@ -30,6 +30,8 @@
 #include <system/core/System.h>
 #include <system/web/Server.h>
 
+#include "LocalhostSite.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -63,6 +65,9 @@ int main(int argc, char *argv[])
 
     // Add server to the system
     sys.addServer(webserver);
+
+    // Add website for localhost
+    webserver->addWebsite(QStringLiteral("localhost"), new LocalhostSite);
 
     return sys.startUp();
 }

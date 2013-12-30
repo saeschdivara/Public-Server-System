@@ -15,7 +15,8 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    LocalhostSite.cpp
 
 QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11
@@ -44,3 +45,6 @@ DEPENDPATH += $$PWD/../../../3rdparty/grantlee/src/
 
 INCLUDEPATH += $$PWD/../../../src/
 DEPENDPATH += $$PWD/../../../src/
+
+HEADERS += \
+    LocalhostSite.h
