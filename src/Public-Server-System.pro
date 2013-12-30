@@ -34,9 +34,13 @@ HEADERS += \
     system/core/System.h \
     system/core/ServerInterface.h \
     system/web/Server.h \
-    system/web/AbstractSite.h
+    system/web/AbstractSite.h \
+    system/web/AbstractSite_p.h \
+    system/web/view/ViewInterface.h \
+    system/core/Exception.h
 
 SOURCES += \
     system/core/System.cpp \
     system/web/Server.cpp \
-    system/web/AbstractSite.cpp
+    system/web/AbstractSite.cpp \
+    system/core/Exception.cpp

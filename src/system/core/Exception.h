@@ -21,47 +21,51 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "AbstractSite.h"
-#include "AbstractSite_p.h"
+#ifndef EXCEPTION_H
+#define EXCEPTION_H
 
-#include "system/core/Exception.h"
+#include "public_server_system_globals.h"
+
+#include <httpserverresponse.h>
+
+#include <exception>
 
 namespace PublicServerSystem
 {
-namespace Web
+namespace Core
 {
 
-AbstractSite::AbstractSite(QObject *parent) :
-    QObject(parent),
-    d_ptr(new AbstractSitePrivate)
-{
-}
+enum class ErrorCode {
+    NotFound
+};
 
-AbstractSite::~AbstractSite()
+class PUBLICSERVERSYSTEMSHARED_EXPORT Exception : std::exception
 {
-    delete d_ptr;
-}
+    public:
+        Exception(ErrorCode code, const QString & reason) Q_DECL_NOEXCEPT :
+            m_code(code), m_reason(reason)
+        { }
 
-void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
-{
-    Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
-}
+        virtual ~Exception() Q_DECL_NOEXCEPT {}
 
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
-{
-    Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
+        /** Returns a C-style character string describing the general cause
+         *  of the current error.  */
+        virtual const char* what() const Q_DECL_NOEXCEPT {
+            return m_reason.toLocal8Bit();
         }
 
-   throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
-}
+        virtual ErrorCode code() {
+            return m_code;
+        }
+
+    protected:
+        ErrorCode m_code;
+        QString m_reason;
+};
+
+PUBLICSERVERSYSTEMSHARED_EXPORT Tufao::HttpServerResponse::StatusCode errorCodeToStatusCode(ErrorCode code);
 
 }
 }
+
+#endif // EXCEPTION_H

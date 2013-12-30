@@ -23,6 +23,8 @@
 
 #include "LocalhostSite.h"
 
+#include <system/web/AbstractSite_p.h>
+
 LocalhostSite::LocalhostSite(QObject *parent) :
     PublicServerSystem::Web::AbstractSite(parent)
 {

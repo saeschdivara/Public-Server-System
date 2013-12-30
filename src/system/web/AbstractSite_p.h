@@ -21,47 +21,25 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "AbstractSite.h"
-#include "AbstractSite_p.h"
+#ifndef ABSTRACTSITE_P_H
+#define ABSTRACTSITE_P_H
 
-#include "system/core/Exception.h"
+#include "system/web/view/ViewInterface.h"
+
+#include <QtCore/QHash>
 
 namespace PublicServerSystem
 {
 namespace Web
 {
 
-AbstractSite::AbstractSite(QObject *parent) :
-    QObject(parent),
-    d_ptr(new AbstractSitePrivate)
+class AbstractSitePrivate
 {
-}
-
-AbstractSite::~AbstractSite()
-{
-    delete d_ptr;
-}
-
-void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
-{
-    Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
-}
-
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
-{
-    Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
-        }
-
-   throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
-}
+    public:
+        QHash<QString, View::ViewInterface *> views;
+};
 
 }
 }
+
+#endif // ABSTRACTSITE_P_H

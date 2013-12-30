@@ -26,21 +26,32 @@
 
 #include "public_server_system_globals.h"
 
+#include "system/web/view/ViewInterface.h"
+
+#include <QtCore/QRegularExpression>
+
 namespace PublicServerSystem
 {
 namespace Web
 {
+
+class AbstractSitePrivate;
 
 class AbstractSite : public QObject
 {
         Q_OBJECT
     public:
         explicit AbstractSite(QObject *parent = 0);
+        virtual ~AbstractSite();
 
-    signals:
+        void addView(const QString & urlRegex, View::ViewInterface * view);
+        View::ViewInterface * view(const QString & urlPath) const;
 
-    public slots:
+    protected:
+        AbstractSitePrivate * d_ptr;
 
+    private:
+        Q_DECLARE_PRIVATE(AbstractSite)
 };
 
 }

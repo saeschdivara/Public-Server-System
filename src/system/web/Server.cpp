@@ -23,9 +23,13 @@
 
 #include "Server.h"
 
+#include "system/core/Exception.h"
+
 // Tufao
+#include <headers.h>
 #include <httpserverrequest.h>
 #include <httpserverresponse.h>
+#include <url.h>
 // Qt
 #include <QtCore/QHash>
 #include <QtNetwork/QSslCertificate>
@@ -124,8 +128,28 @@ void Server::setLocalCertificate(const QSslCertificate &certificate)
 
 void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
 {
-    response->writeHead(Tufao::HttpServerResponse::NOT_FOUND);
-    response->end("Not found");
+    Q_D(Server);
+
+    Tufao::Url url(Tufao::Url::url(request));
+    Tufao::Headers headers = request->headers();
+
+    qDebug() << url.hostname();
+    qDebug() << headers;
+
+    AbstractSite * site = d->websites.value(url.hostname(), Q_NULLPTR);
+
+    try {
+        View::ViewInterface * view = site->view(url.path());
+    }
+    catch(Core::Exception ex) {
+        response->writeHead(Core::errorCodeToStatusCode(ex.code()));
+        response->end(ex.what());
+    }
+    catch (...) {
+        response->writeHead(Tufao::HttpServerResponse::INTERNAL_SERVER_ERROR);
+        response->end("Error");
+    }
+
 }
 
 }

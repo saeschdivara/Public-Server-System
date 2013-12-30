@@ -21,47 +21,29 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "AbstractSite.h"
-#include "AbstractSite_p.h"
-
-#include "system/core/Exception.h"
+#include "Exception.h"
 
 namespace PublicServerSystem
 {
-namespace Web
+namespace Core
 {
 
-AbstractSite::AbstractSite(QObject *parent) :
-    QObject(parent),
-    d_ptr(new AbstractSitePrivate)
-{
-}
+Tufao::HttpServerResponse::StatusCode errorCodeToStatusCode(ErrorCode code) {
+    Tufao::HttpServerResponse::StatusCode status;
 
-AbstractSite::~AbstractSite()
-{
-    delete d_ptr;
-}
-
-void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
-{
-    Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
-}
-
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
-{
-    Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
+    switch (code)
+        {
+    case ErrorCode::NotFound:
+        status = Tufao::HttpServerResponse::NOT_FOUND;
+        break;
+    default:
+        status = Tufao::HttpServerResponse::INTERNAL_SERVER_ERROR;
+        break;
         }
 
-   throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
+    return status;
 }
 
 }
 }
+
