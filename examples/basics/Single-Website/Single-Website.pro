@@ -24,13 +24,13 @@ CONFIG += c++11
 CONFIG(release, debug|release): {
     LIBS += -L$$PWD/../../../dist/3rdparty/tufao/release/ -ltufao
     LIBS += -L$$PWD/../../../dist/3rdparty/arangodb-driver/release/ -larangodb-driver
-    LIBS += -L$$PWD/../../../dist/3rdparty/grantlee/scriptable-library/release/ -lscriptabletags
+    LIBS += -L$$PWD/../../../dist/3rdparty/grantlee/template_library/release/ -ltemplate_library
     LIBS += -L$$PWD/../../../dist/Public-Server-System/release/ -lPublic-Server-System
 }
 else:CONFIG(debug, debug|release): {
     LIBS += -L$$PWD/../../../dist/3rdparty/tufao/debug/ -ltufao
     LIBS += -L$$PWD/../../../dist/3rdparty/arangodb-driver/debug/ -larangodb-driver
-    LIBS += -L$$PWD/../../../dist/3rdparty/grantlee/scriptable-library/debug/ -lscriptabletags
+    LIBS += -L$$PWD/../../../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
     LIBS += -L$$PWD/../../../dist/Public-Server-System/debug/ -lPublic-Server-System
 }
 

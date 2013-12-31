@@ -35,7 +35,7 @@ AbstractSite::AbstractSite(QObject *parent) :
     QObject(parent),
     d_ptr(new AbstractSitePrivate)
 {
-    d_ptr->engine = new Grantlee::Engine;
+    d_ptr->engine = new Grantlee::Engine(this);
 }
 
 AbstractSite::~AbstractSite()
