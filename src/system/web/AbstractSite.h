@@ -28,6 +28,9 @@
 
 #include "system/web/view/ViewInterface.h"
 
+// Grantlee
+#include <lib/engine.h>
+// Qt
 #include <QtCore/QRegularExpression>
 
 namespace PublicServerSystem
@@ -46,6 +49,8 @@ class AbstractSite : public QObject
 
         void addView(const QString & urlRegex, View::ViewInterface * view);
         View::ViewInterface * view(const QString & urlPath) const;
+
+        Grantlee::Engine * templateEngine() const;
 
     protected:
         AbstractSitePrivate * d_ptr;

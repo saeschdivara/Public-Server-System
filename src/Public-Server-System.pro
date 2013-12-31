@@ -26,8 +26,8 @@ DEPENDPATH += $$PWD/../3rdparty/tufao/src
 INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/src
 DEPENDPATH += $$PWD/../3rdparty/arangodb-driver/src
 
-INCLUDEPATH += $$PWD/../3rdparty/grantlee/src/
-DEPENDPATH += $$PWD/../3rdparty/grantlee/src/
+INCLUDEPATH += $$PWD/../3rdparty/grantlee/templates/
+DEPENDPATH += $$PWD/../3rdparty/grantlee/templates/
 
 HEADERS += \
     public_server_system_globals.h \

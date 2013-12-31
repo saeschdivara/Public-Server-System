@@ -35,10 +35,13 @@ AbstractSite::AbstractSite(QObject *parent) :
     QObject(parent),
     d_ptr(new AbstractSitePrivate)
 {
+    d_ptr->engine = new Grantlee::Engine;
 }
 
 AbstractSite::~AbstractSite()
 {
+    qDeleteAll(d_ptr->views);
+
     delete d_ptr;
 }
 
@@ -60,7 +63,13 @@ View::ViewInterface *AbstractSite::view(const QString &urlPath) const
                 }
         }
 
-   throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
+    throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
+}
+
+Grantlee::Engine *AbstractSite::templateEngine() const
+{
+    Q_D(const AbstractSite);
+    return d->engine;
 }
 
 }

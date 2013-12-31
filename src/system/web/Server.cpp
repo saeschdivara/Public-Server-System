@@ -25,6 +25,8 @@
 
 #include "system/core/Exception.h"
 
+// Grantlee
+#include <lib/cachingloaderdecorator.h>
 // Tufao
 #include <headers.h>
 #include <httpserverrequest.h>
@@ -142,6 +144,8 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
     AbstractSite * site = d->websites.value(url.hostname(), Q_NULLPTR);
 
     try {
+        if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
+
         View::ViewInterface * view = site->view(url.path());
 
         QBuffer buffer;
@@ -151,7 +155,7 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
         stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-        view->render(stream);
+        view->render(site->templateEngine(), stream);
 
         buffer.close();
 

@@ -26,6 +26,9 @@
 
 #include "public_server_system_globals.h"
 
+// Grantlee
+#include <lib/engine.h>
+// Qt
 #include <QtCore/QTextStream>
 
 namespace PublicServerSystem
@@ -40,7 +43,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
     public:
         virtual ~ViewInterface() {}
 
-        virtual void render(QTextStream & stream) = 0;
+        virtual void render(Grantlee::Engine * templateEngine, QTextStream & stream) = 0;
 };
 
 }

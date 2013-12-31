@@ -26,6 +26,9 @@
 
 #include "system/web/view/ViewInterface.h"
 
+// Grantlee
+#include <lib/engine.h>
+// Qt
 #include <QtCore/QHash>
 
 namespace PublicServerSystem
@@ -37,6 +40,7 @@ class AbstractSitePrivate
 {
     public:
         QHash<QString, View::ViewInterface *> views;
+        Grantlee::Engine * engine = Q_NULLPTR;
 };
 
 }

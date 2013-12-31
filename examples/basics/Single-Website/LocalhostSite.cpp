@@ -25,12 +25,24 @@
 
 #include <system/web/AbstractSite_p.h>
 
+#include <lib/engine.h>
+#include <lib/template.h>
+
 class IndexView : public PublicServerSystem::Web::View::ViewInterface
 {
         // ViewInterface interface
     public:
-        virtual void render(QTextStream &stream) {
+        virtual void render(Grantlee::Engine * templateEngine, QTextStream &stream) {
+            Q_UNUSED(templateEngine);
             stream << QStringLiteral("<html><head><meta charset=\"utf-8\"> </head><body><h1>HäLOO</h1></body></html>");
+        }
+};
+
+class TestView : public PublicServerSystem::Web::View::ViewInterface
+{
+        // ViewInterface interface
+    public:
+        virtual void render(Grantlee::Engine * templateEngine, QTextStream &stream) {
         }
 };
 
@@ -38,4 +50,5 @@ LocalhostSite::LocalhostSite(QObject *parent) :
     PublicServerSystem::Web::AbstractSite(parent)
 {
     addView("/index", new IndexView);
+    addView("^/", new TestView);
 }
