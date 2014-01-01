@@ -27,11 +27,16 @@
 #include <QObject>
 #include <system/web/AbstractSite.h>
 
+class LocalhostSitePrivate;
+
 class LocalhostSite : public PublicServerSystem::Web::AbstractSite
 {
         Q_OBJECT
     public:
         explicit LocalhostSite(QObject *parent = 0);
+
+    private:
+        Q_DECLARE_PRIVATE(LocalhostSite)
 };
 
 #endif // LOCALHOSTSITE_H

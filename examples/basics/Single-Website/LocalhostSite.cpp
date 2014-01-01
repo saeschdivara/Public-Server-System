@@ -25,8 +25,16 @@
 
 #include <system/web/AbstractSite_p.h>
 
+#include <lib/cachingloaderdecorator.h>
 #include <lib/engine.h>
 #include <lib/template.h>
+
+#include <QtCore/QDebug>
+
+class LocalhostSitePrivate : public PublicServerSystem::Web::AbstractSitePrivate
+{
+    public:
+};
 
 class IndexView : public PublicServerSystem::Web::View::ViewInterface
 {
@@ -43,12 +51,31 @@ class TestView : public PublicServerSystem::Web::View::ViewInterface
         // ViewInterface interface
     public:
         virtual void render(Grantlee::Engine * templateEngine, QTextStream &stream) {
+            Grantlee::OutputStream output(&stream);
+
+            Grantlee::Template tem = templateEngine->loadByName("test.html");
+
+            Grantlee::Context context;
+            context.insert("name", QStringLiteral("--- FF ----"));
+
+            tem->render(&output, &context);
         }
 };
 
 LocalhostSite::LocalhostSite(QObject *parent) :
-    PublicServerSystem::Web::AbstractSite(parent)
+    PublicServerSystem::Web::AbstractSite(new LocalhostSitePrivate, parent)
 {
+    Q_D(LocalhostSite);
+
+    Grantlee::FileSystemTemplateLoader::Ptr loader( new Grantlee::FileSystemTemplateLoader() );
+    // This path should point to the source of this code
+    loader->setTemplateDirs( QStringList() << "./../../../../../examples/basics/Single-Website/templates" );
+
+    Grantlee::CachingLoaderDecorator::Ptr cache( new Grantlee::CachingLoaderDecorator( loader ) );
+    d->engine->addTemplateLoader(cache);
+
+    d->engine->addPluginPath("./plugins");
+
     addView("/index", new IndexView);
     addView("^/", new TestView);
 }
