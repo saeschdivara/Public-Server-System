@@ -45,6 +45,7 @@ class AbstractSite : public QObject
         Q_OBJECT
     public:
         explicit AbstractSite(QObject *parent = 0);
+        AbstractSite(AbstractSitePrivate * pri, QObject *parent = 0);
         virtual ~AbstractSite();
 
         void addView(const QString & urlRegex, View::ViewInterface * view);

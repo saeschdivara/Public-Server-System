@@ -32,10 +32,15 @@ namespace Web
 {
 
 AbstractSite::AbstractSite(QObject *parent) :
-    QObject(parent),
-    d_ptr(new AbstractSitePrivate)
+    AbstractSite(new AbstractSitePrivate)
 {
-    d_ptr->engine = new Grantlee::Engine(this);
+}
+
+AbstractSite::AbstractSite(AbstractSitePrivate *pri, QObject *parent) :
+    QObject(parent),
+    d_ptr(pri)
+{
+    pri->engine = new Grantlee::Engine(this);
 }
 
 AbstractSite::~AbstractSite()

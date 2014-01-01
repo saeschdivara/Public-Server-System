@@ -48,3 +48,6 @@ DEPENDPATH += $$PWD/../../../src/
 
 HEADERS += \
     LocalhostSite.h
+
+OTHER_FILES += \
+    templates/test.html
