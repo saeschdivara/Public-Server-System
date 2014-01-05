@@ -50,6 +50,15 @@ class TestView : public PublicServerSystem::Web::View::ViewInterface
 {
         // ViewInterface interface
     public:
+        TestView() {
+            m_object = new QObject;
+            m_object->setProperty("fu", QStringLiteral("DFDDDD"));
+        }
+
+        virtual ~TestView() {
+            delete m_object;
+        }
+
         virtual void render(Grantlee::Engine * templateEngine, QTextStream &stream) {
             Grantlee::OutputStream output(&stream);
 
@@ -57,9 +66,13 @@ class TestView : public PublicServerSystem::Web::View::ViewInterface
 
             Grantlee::Context context;
             context.insert("name", QStringLiteral("--- FF ----"));
+            context.insert("obj", m_object);
 
             tem->render(&output, &context);
         }
+
+    protected:
+        QObject * m_object;
 };
 
 LocalhostSite::LocalhostSite(QObject *parent) :
