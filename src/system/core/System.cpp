@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "System.h"
+#include "System_p.h"
 
 #include <QtCore/QDebug>
 
@@ -30,14 +31,14 @@ namespace PublicServerSystem
 namespace Core
 {
 
-class SystemPrivate
-{
-    public:
-        QCoreApplication *app;
-};
-
 System::System(QCoreApplication *app) :
-    d_ptr(new SystemPrivate)
+    System(new SystemPrivate, app)
+{
+    //
+}
+
+System::System(SystemPrivate *pri, QCoreApplication *app) :
+    d_ptr(pri)
 {
     d_ptr->app = app;
 }
@@ -52,11 +53,15 @@ int System::startUp()
     Q_D(System);
     int returnCode = 0; // everything worked out as expected
 
+    beforeStartUp();
+
     try {
         d->app->exec();
     } catch (...) {
         qWarning() << Q_FUNC_INFO << "Something went terrible wrong!";
     }
+
+    beforeShutdown();
 
     return returnCode;
 }

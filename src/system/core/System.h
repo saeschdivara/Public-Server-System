@@ -46,13 +46,16 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT System
 {
     public:
         System(QCoreApplication * app);
-        ~System();
+        virtual ~System();
 
+        virtual void beforeStartUp() {}
         int startUp();
+        virtual void beforeShutdown() {}
 
         void addServer(ServerInterface * server);
 
     protected:
+        System(SystemPrivate * pri, QCoreApplication * app);
         SystemPrivate * d_ptr;
 
     private:
