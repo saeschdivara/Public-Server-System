@@ -39,6 +39,8 @@ class ConnectedSystemNodePrivate : public SystemPrivate
                             return address;
                         }
                 }
+
+            return QHostAddress::LocalHost;
         }
 };
 
@@ -64,6 +66,7 @@ void ConnectedSystemNode::beforeStartUp()
     qDebug() << "My ID:" << d->localID.toByteArray();
 
     d->socket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, QVariant(1));
+
     d->socket->bind(QHostAddress::AnyIPv4, SERVER_MULTICAST_PORT, QUdpSocket::ShareAddress);
     d->socket->joinMulticastGroup(QHostAddress("224.0.0.1")); // https://en.wikipedia.org/wiki/Multicast_address
 
@@ -81,7 +84,7 @@ void ConnectedSystemNode::beforeStartUp()
             d->socket->writeDatagram(requestString, QHostAddress("224.0.0.1"), SERVER_MULTICAST_PORT);
         }
 
-    QTimer::singleShot( 1000, this, SLOT(deceideToBeMaster()) );
+    QTimer::singleShot( 2000, this, SLOT(deceideToBeMaster()) );
 }
 
 void ConnectedSystemNode::deceideToBeMaster()
@@ -118,27 +121,33 @@ void ConnectedSystemNode::receivedMessageFromMulticastGroup()
                     QHostAddress address = QHostAddress(addressString);
                     QUuid id = QUuid(splitData.at(1));
 
-                    d->socket->connectToHost(address, SERVER_MULTICAST_PORT);
-
                     QByteArray masterMessage("MASTER ");
-                    masterMessage += d->localAddress.toString();
+                    masterMessage += id.toByteArray();
+                    masterMessage += " " + d->localAddress.toString();
                     masterMessage += " " + d->localID.toByteArray();
 
-                    d->socket->write(masterMessage);
+                    d->socket->writeDatagram(masterMessage, address, SERVER_MULTICAST_PORT);
                 }
 
             if (!d->isMasterNode && datagram.startsWith("MASTER")) {
-                    d->state = SystemState::Connected;
                     datagram.replace("MASTER ", "");
 
                     QList<QByteArray> splitData = datagram.split(' ');
 
-                    QString addressString = splitData.at(0);
+                    QUuid localID = QUuid(splitData.at(0));
+
+                    if (localID != d->localID) {
+                            return;
+                        }
+
+                    d->state = SystemState::Connected;
+
+                    QString addressString = splitData.at(1);
                     QHostAddress address = QHostAddress(addressString);
-                    QUuid id = QUuid(splitData.at(1));
+                    QUuid masterID = QUuid(splitData.at(2));
 
                     d->masterAddress = address;
-                    d->masterID = id;
+                    d->masterID = masterID;
                 }
         }
 }
