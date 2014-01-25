@@ -12,12 +12,16 @@ class ConnectedSystemNodePrivate;
 
 class PUBLICSERVERSYSTEMSHARED_EXPORT ConnectedSystemNode : public System
 {
+        Q_OBJECT
     public:
         ConnectedSystemNode(QCoreApplication * app);
         virtual ~ConnectedSystemNode();
 
-    protected:
-        ConnectedSystemNodePrivate * d_ptr;
+        virtual void beforeStartUp();
+
+    protected Q_SLOTS:
+        void deceideToBeMaster();
+        void receivedMessageFromMulticastGroup();
 
     private:
         Q_DECLARE_PRIVATE(ConnectedSystemNode)

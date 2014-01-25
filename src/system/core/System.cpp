@@ -38,6 +38,7 @@ System::System(QCoreApplication *app) :
 }
 
 System::System(SystemPrivate *pri, QCoreApplication *app) :
+    QObject(app),
     d_ptr(pri)
 {
     d_ptr->app = app;

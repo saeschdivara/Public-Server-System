@@ -42,8 +42,9 @@ class SystemPrivate;
  * @author Sascha Häusler<saeschdivara@gmail.com>
  * @since 0.1
  */
-class PUBLICSERVERSYSTEMSHARED_EXPORT System
+class PUBLICSERVERSYSTEMSHARED_EXPORT System : public QObject
 {
+        Q_OBJECT
     public:
         System(QCoreApplication * app);
         virtual ~System();
