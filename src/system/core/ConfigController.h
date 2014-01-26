@@ -40,6 +40,9 @@ class ConfigController : public QObject
         explicit ConfigController(QObject *parent = 0);
 
         bool searchJsonConfig(const QStringList & searchPaths);
+        bool searchJsonConfig(const QString & searchPath);
+
+        void discard();
 
     protected:
         ConfigControllerPrivate * d_ptr;

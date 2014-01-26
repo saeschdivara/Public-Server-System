@@ -23,6 +23,10 @@
 
 #include "ConfigController.h"
 
+#include <QtCore/QFile>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+
 namespace PublicServerSystem
 {
 namespace Core
@@ -31,6 +35,7 @@ namespace Core
 class ConfigControllerPrivate
 {
     public:
+        QFile * file = Q_NULLPTR;
 };
 
 ConfigController::ConfigController(QObject *parent) :
@@ -41,7 +46,49 @@ ConfigController::ConfigController(QObject *parent) :
 
 bool ConfigController::searchJsonConfig(const QStringList &searchPaths)
 {
+    for ( auto path : searchPaths ) {
+            if (searchJsonConfig(path)) {
+                    return true;
+                }
+        }
+
     return false;
+}
+
+bool ConfigController::searchJsonConfig(const QString &searchPath)
+{
+    Q_D(ConfigController);
+
+    QString filePath;
+
+    if (!searchPath.endsWith("/")) {
+            filePath = searchPath + QLatin1Char('/') + "config.json";
+        }
+    else {
+            filePath = searchPath + "config.json";
+        }
+    QFile * file = new QFile(filePath);
+
+    if (!file->open(QIODevice::ReadWrite)) {
+            delete file;
+            return false;
+        }
+
+    d->file = file;
+    return true;
+}
+
+void ConfigController::discard()
+{
+    Q_D(ConfigController);
+
+    if (d->file) {
+            if (d->file->isOpen()) {
+                    d->file->close();
+                }
+
+            delete d->file;
+        }
 }
 
 }

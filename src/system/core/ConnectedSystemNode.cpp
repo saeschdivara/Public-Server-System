@@ -185,6 +185,9 @@ void ConnectedSystemNode::startToBeSlave()
 {
     Q_D(ConnectedSystemNode);
 
+    // We need a config from the master node
+    d->config.discard();
+
     d->tcpSocket = new QTcpSocket(this);
 
     d->tcpSocket->connectToHost(d->masterAddress, SERVER_TCP_PORT);

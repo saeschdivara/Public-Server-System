@@ -23,11 +23,11 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(myMessageOutput);
+    //qInstallMessageHandler(myMessageOutput);
     QCoreApplication app(argc, argv);
     PublicServerSystem::Core::ConnectedSystemNode sys(&app);
 
-    sys.searchConfig(QStringList() << "./config");
+    sys.searchConfig(QStringList() << ":/config");
     sys.startUp();
 
     return app.exec();
