@@ -39,11 +39,13 @@ HEADERS += \
     system/web/view/ViewInterface.h \
     system/core/Exception.h \
     system/core/ConnectedSystemNode.h \
-    system/core/System_p.h
+    system/core/System_p.h \
+    system/core/ConfigController.h
 
 SOURCES += \
     system/core/System.cpp \
     system/web/Server.cpp \
     system/web/AbstractSite.cpp \
     system/core/Exception.cpp \
-    system/core/ConnectedSystemNode.cpp
+    system/core/ConnectedSystemNode.cpp \
+    system/core/ConfigController.cpp

@@ -19,9 +19,16 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ConnectedSystemNode : public System
 
         virtual void beforeStartUp();
 
+    Q_SIGNALS:
+        void slaveSignal();
+        void masterSignal();
+
     protected Q_SLOTS:
         void deceideToBeMaster();
         void receivedMessageFromMulticastGroup();
+
+        void startToBeSlave();
+        void startToBeMaster();
 
     private:
         Q_DECLARE_PRIVATE(ConnectedSystemNode)

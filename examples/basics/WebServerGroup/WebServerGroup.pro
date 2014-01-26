@@ -43,3 +43,9 @@ INCLUDEPATH += $$PWD/../../../src/
 DEPENDPATH += $$PWD/../../../src/
 
 SOURCES += main.cpp
+
+RESOURCES += \
+    data.qrc
+
+OTHER_FILES += \
+    config.json

@@ -21,58 +21,34 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef CONFIGCONTROLLER_H
+#define CONFIGCONTROLLER_H
 
-#include "public_server_system_globals.h"
-#include "system/core/ServerInterface.h"
-
-#include <QtCore/QCoreApplication>
-#include <QtCore/QStringList>
+#include <QObject>
 
 namespace PublicServerSystem
 {
 namespace Core
 {
 
-class SystemPrivate;
+class ConfigControllerPrivate;
 
-enum class ConfigType {
-    Json,
-    Xml,
-    Ini
-};
-
-/**
- * @brief The System class
- *
- * @author Sascha Häusler<saeschdivara@gmail.com>
- * @since 0.1
- */
-class PUBLICSERVERSYSTEMSHARED_EXPORT System : public QObject
+class ConfigController : public QObject
 {
         Q_OBJECT
     public:
-        System(QCoreApplication * app);
-        virtual ~System();
+        explicit ConfigController(QObject *parent = 0);
 
-        virtual void beforeStartUp() {}
-        int startUp();
-        virtual void beforeShutdown() {}
-
-        void addServer(ServerInterface * server);
-
-        void searchConfig(QStringList searchPaths, ConfigType type = ConfigType::Json);
+        bool searchJsonConfig(const QStringList & searchPaths);
 
     protected:
-        System(SystemPrivate * pri, QCoreApplication * app);
-        SystemPrivate * d_ptr;
+        ConfigControllerPrivate * d_ptr;
 
     private:
-        Q_DECLARE_PRIVATE(System)
+        Q_DECLARE_PRIVATE(ConfigController)
 };
 
 }
 }
 
-#endif // SYSTEM_H
+#endif // CONFIGCONTROLLER_H

@@ -5,6 +5,8 @@
 #include <QtCore/QUuid>
 #include <QtNetwork/QHostAddress>
 #include <QtNetwork/QNetworkInterface>
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
 #include <QtNetwork/QUdpSocket>
 
 namespace PublicServerSystem
@@ -18,11 +20,16 @@ enum class SystemState {
 };
 
 const quint16 SERVER_MULTICAST_PORT = 45454;
+const quint16 SERVER_TCP_PORT = 35353;
+const QHostAddress MULTICAST_ADDRESS = QHostAddress("224.0.0.1");
 
 class ConnectedSystemNodePrivate : public SystemPrivate
 {
     public:
-        QUdpSocket* socket;
+        // --------------------------- PROPERTIES -----------------------------
+        QUdpSocket* udpSocket;
+
+        QTcpSocket * tcpSocket = Q_NULLPTR;
 
         SystemState state = SystemState::Searching;
         bool isMasterNode = false;
@@ -33,6 +40,9 @@ class ConnectedSystemNodePrivate : public SystemPrivate
         QHostAddress localAddress;
         QUuid localID;
 
+        QTcpServer * server = Q_NULLPTR;
+
+        // --------------------------- METHODS -----------------------------
         QHostAddress getAddress() {
             for ( QHostAddress address : QNetworkInterface::allAddresses() ) {
                     if (address != QHostAddress::LocalHost && address != QHostAddress::LocalHostIPv6) {
@@ -48,11 +58,14 @@ ConnectedSystemNode::ConnectedSystemNode(QCoreApplication *app) :
     System(new ConnectedSystemNodePrivate, app)
 {
     Q_D(ConnectedSystemNode);
-    d->socket = new QUdpSocket(this);
+    d->udpSocket = new QUdpSocket(this);
 }
 
 ConnectedSystemNode::~ConnectedSystemNode()
 {
+    Q_D(ConnectedSystemNode);
+
+    d->server->close();
 }
 
 void ConnectedSystemNode::beforeStartUp()
@@ -65,12 +78,12 @@ void ConnectedSystemNode::beforeStartUp()
     qDebug() << "My address:" << d->localAddress.toString();
     qDebug() << "My ID:" << d->localID.toByteArray();
 
-    d->socket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, QVariant(1));
+    d->udpSocket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, QVariant(1));
 
-    d->socket->bind(QHostAddress::AnyIPv4, SERVER_MULTICAST_PORT, QUdpSocket::ShareAddress);
-    d->socket->joinMulticastGroup(QHostAddress("224.0.0.1")); // https://en.wikipedia.org/wiki/Multicast_address
+    d->udpSocket->bind(QHostAddress::AnyIPv4, SERVER_MULTICAST_PORT, QUdpSocket::ShareAddress);
+    d->udpSocket->joinMulticastGroup(MULTICAST_ADDRESS); // https://en.wikipedia.org/wiki/Multicast_address
 
-    QObject::connect( d->socket, &QUdpSocket::readyRead,
+    QObject::connect( d->udpSocket, &QUdpSocket::readyRead,
                       this, &ConnectedSystemNode::receivedMessageFromMulticastGroup
                       );
 
@@ -81,7 +94,7 @@ void ConnectedSystemNode::beforeStartUp()
             // Add Uuid
             requestString += " " + d->localID.toByteArray();
 
-            d->socket->writeDatagram(requestString, QHostAddress("224.0.0.1"), SERVER_MULTICAST_PORT);
+            d->udpSocket->writeDatagram(requestString, MULTICAST_ADDRESS, SERVER_MULTICAST_PORT);
         }
 
     QTimer::singleShot( 2000, this, SLOT(deceideToBeMaster()) );
@@ -92,12 +105,19 @@ void ConnectedSystemNode::deceideToBeMaster()
     Q_D(ConnectedSystemNode);
 
     if (d->state == SystemState::Searching) {
+            d->state = SystemState::Connected;
             d->isMasterNode =true;
 
             qDebug() << "Is now a master node";
+
+            // Emit signal that this is master node
+            Q_EMIT masterSignal();
         }
     else {
             qDebug() << "Is now slave node";
+
+            // Emit signal that this is slave node
+            Q_EMIT slaveSignal();
         }
 }
 
@@ -105,10 +125,10 @@ void ConnectedSystemNode::receivedMessageFromMulticastGroup()
 {
     Q_D(ConnectedSystemNode);
 
-    if (d->socket->hasPendingDatagrams()) {
+    if (d->udpSocket->hasPendingDatagrams()) {
             QByteArray datagram;
-            datagram.resize(d->socket->pendingDatagramSize());
-            d->socket->readDatagram(datagram.data(), datagram.size());
+            datagram.resize(d->udpSocket->pendingDatagramSize());
+            d->udpSocket->readDatagram(datagram.data(), datagram.size());
 
             qDebug() << datagram;
 
@@ -126,7 +146,7 @@ void ConnectedSystemNode::receivedMessageFromMulticastGroup()
                     masterMessage += " " + d->localAddress.toString();
                     masterMessage += " " + d->localID.toByteArray();
 
-                    d->socket->writeDatagram(masterMessage, address, SERVER_MULTICAST_PORT);
+                    d->udpSocket->writeDatagram(masterMessage, address, SERVER_MULTICAST_PORT);
                 }
 
             if (!d->isMasterNode && datagram.startsWith("MASTER")) {
@@ -148,8 +168,34 @@ void ConnectedSystemNode::receivedMessageFromMulticastGroup()
 
                     d->masterAddress = address;
                     d->masterID = masterID;
+
+                    // We don't want the slaves to be in the multicast
+                    d->udpSocket->leaveMulticastGroup(MULTICAST_ADDRESS);
+
+                    QObject::disconnect( d->udpSocket, &QUdpSocket::readyRead,
+                                         this, &ConnectedSystemNode::receivedMessageFromMulticastGroup
+                                         );
+
+                    delete d->udpSocket;
                 }
         }
+}
+
+void ConnectedSystemNode::startToBeSlave()
+{
+    Q_D(ConnectedSystemNode);
+
+    d->tcpSocket = new QTcpSocket(this);
+
+    d->tcpSocket->connectToHost(d->masterAddress, SERVER_TCP_PORT);
+}
+
+void ConnectedSystemNode::startToBeMaster()
+{
+    Q_D(ConnectedSystemNode);
+
+    d->server = new QTcpServer(this);
+    d->server->listen(QHostAddress::Any, SERVER_TCP_PORT);
 }
 
 }

@@ -34,7 +34,6 @@ namespace Core
 System::System(QCoreApplication *app) :
     System(new SystemPrivate, app)
 {
-    //
 }
 
 System::System(SystemPrivate *pri, QCoreApplication *app) :
@@ -59,7 +58,7 @@ int System::startUp()
     try {
         d->app->exec();
     } catch (...) {
-        qWarning() << Q_FUNC_INFO << "Something went terrible wrong!";
+        qWarning() << "Something went terrible wrong!";
     }
 
     beforeShutdown();
@@ -70,6 +69,22 @@ int System::startUp()
 void System::addServer(ServerInterface *server)
 {
     Q_UNUSED(server)
+}
+
+void System::searchConfig(QStringList searchPaths, ConfigType type)
+{
+    Q_D(System);
+
+    switch (type) {
+    case ConfigType::Json:
+        if (!d->config.searchJsonConfig(searchPaths)) {
+                qWarning() << "No config file has been found!";
+            }
+        break;
+    default:
+        qWarning() << "This config type is not supported";
+        break;
+        }
 }
 
 }

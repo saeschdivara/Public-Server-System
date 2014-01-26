@@ -1,6 +1,8 @@
 #ifndef SYSTEM_P_H
 #define SYSTEM_P_H
 
+#include "system/core/ConfigController.h"
+
 #include <QtCore/QCoreApplication>
 
 namespace PublicServerSystem
@@ -12,6 +14,8 @@ class SystemPrivate
 {
     public:
         QCoreApplication *app;
+
+        ConfigController config;
 };
 
 }
