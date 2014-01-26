@@ -7,3 +7,6 @@
 [submodule "3rdparty/arandodb-driver"]
 	path = 3rdparty/arandodb-driver
 	url = git@github.com:saeschdivara/Qt-Arango-DB-Driver.git
+[submodule "3rdparty/QuaZIP"]
+	path = 3rdparty/QuaZIP
+	url = git@github.com:saeschdivara/QuaZIP.git
