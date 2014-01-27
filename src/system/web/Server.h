@@ -42,7 +42,7 @@ namespace Web
 
 class ServerPrivate;
 
-class Server : public QObject, public Core::ServerInterface
+class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::ServerInterface
 {
         Q_OBJECT
     public:

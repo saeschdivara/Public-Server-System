@@ -20,11 +20,14 @@ else:CONFIG(debug, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
 }
 
-INCLUDEPATH += $$PWD/../3rdparty/tufao/src
-DEPENDPATH += $$PWD/../3rdparty/tufao/src
+INCLUDEPATH += $$PWD/../3rdparty/
 
-INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/src
-DEPENDPATH += $$PWD/../3rdparty/arangodb-driver/src
+INCLUDEPATH += $$PWD/../3rdparty/tufao/src/
+DEPENDPATH += $$PWD/../3rdparty/tufao/src/
+
+INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/src/
+INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/include/
+DEPENDPATH += $$PWD/../3rdparty/arangodb-driver/src/
 
 INCLUDEPATH += $$PWD/../3rdparty/grantlee/templates/
 DEPENDPATH += $$PWD/../3rdparty/grantlee/templates/
@@ -40,7 +43,9 @@ HEADERS += \
     system/core/Exception.h \
     system/core/ConnectedSystemNode.h \
     system/core/System_p.h \
-    system/core/ConfigController.h
+    system/core/ConfigController.h \
+    system/web/model/AbstractModel.h \
+    system/web/model/AbstractModel_p.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -48,4 +53,5 @@ SOURCES += \
     system/web/AbstractSite.cpp \
     system/core/Exception.cpp \
     system/core/ConnectedSystemNode.cpp \
-    system/core/ConfigController.cpp
+    system/core/ConfigController.cpp \
+    system/web/model/AbstractModel.cpp

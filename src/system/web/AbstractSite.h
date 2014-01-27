@@ -40,7 +40,7 @@ namespace Web
 
 class AbstractSitePrivate;
 
-class AbstractSite : public QObject
+class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractSite : public QObject
 {
         Q_OBJECT
     public:

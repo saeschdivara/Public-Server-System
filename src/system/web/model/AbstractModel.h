@@ -21,61 +21,37 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "AbstractSite.h"
-#include "AbstractSite_p.h"
+#ifndef ABSTRACTMODEL_H
+#define ABSTRACTMODEL_H
 
-#include "system/core/Exception.h"
+#include "public_server_system_globals.h"
 
 namespace PublicServerSystem
 {
 namespace Web
 {
-
-AbstractSite::AbstractSite(QObject *parent) :
-    AbstractSite(new AbstractSitePrivate, parent)
+namespace Model
 {
-}
 
-AbstractSite::AbstractSite(AbstractSitePrivate *pri, QObject *parent) :
-    QObject(parent),
-    d_ptr(pri)
+class AbstractModelPrivate;
+
+class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
 {
-    pri->engine = new Grantlee::Engine(this);
-}
+        Q_OBJECT
+    public:
+        explicit AbstractModel(QObject *parent = 0);
+        virtual ~AbstractModel();
 
-AbstractSite::~AbstractSite()
-{
-    qDeleteAll(d_ptr->views);
+    protected:
+        AbstractModel(AbstractModelPrivate * ptr, QObject *parent = 0);
+        AbstractModelPrivate * d_ptr;
 
-    delete d_ptr;
-}
-
-void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
-{
-    Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
-}
-
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
-{
-    Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
-        }
-
-    throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
-}
-
-Grantlee::Engine *AbstractSite::templateEngine() const
-{
-    Q_D(const AbstractSite);
-    return d->engine;
-}
+    private:
+        Q_DECLARE_PRIVATE(AbstractModel)
+};
 
 }
 }
+}
+
+#endif // ABSTRACTMODEL_H

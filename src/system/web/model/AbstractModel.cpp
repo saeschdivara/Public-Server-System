@@ -21,61 +21,32 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "AbstractSite.h"
-#include "AbstractSite_p.h"
-
-#include "system/core/Exception.h"
+#include "AbstractModel.h"
+#include "AbstractModel_p.h"
 
 namespace PublicServerSystem
 {
 namespace Web
 {
+namespace Model
+{
 
-AbstractSite::AbstractSite(QObject *parent) :
-    AbstractSite(new AbstractSitePrivate, parent)
+AbstractModel::AbstractModel(QObject *parent) :
+    AbstractModel(new AbstractModelPrivate, parent)
 {
 }
 
-AbstractSite::AbstractSite(AbstractSitePrivate *pri, QObject *parent) :
-    QObject(parent),
-    d_ptr(pri)
+AbstractModel::~AbstractModel()
 {
-    pri->engine = new Grantlee::Engine(this);
-}
-
-AbstractSite::~AbstractSite()
-{
-    qDeleteAll(d_ptr->views);
-
     delete d_ptr;
 }
 
-void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
+AbstractModel::AbstractModel(AbstractModelPrivate *ptr, QObject *parent) :
+    QObject(parent),
+    d_ptr(ptr)
 {
-    Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
 }
 
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
-{
-    Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
-        }
-
-    throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
 }
-
-Grantlee::Engine *AbstractSite::templateEngine() const
-{
-    Q_D(const AbstractSite);
-    return d->engine;
-}
-
 }
 }
