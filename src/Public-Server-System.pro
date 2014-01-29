@@ -20,8 +20,6 @@ else:CONFIG(debug, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
 }
 
-INCLUDEPATH += $$PWD/../3rdparty/
-
 INCLUDEPATH += $$PWD/../3rdparty/tufao/src/
 DEPENDPATH += $$PWD/../3rdparty/tufao/src/
 
@@ -45,7 +43,9 @@ HEADERS += \
     system/core/System_p.h \
     system/core/ConfigController.h \
     system/web/model/AbstractModel.h \
-    system/web/model/AbstractModel_p.h
+    system/web/model/AbstractModel_p.h \
+    system/web/model/ModelManager.h \
+    system/web/model/ModelManager_p.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -54,4 +54,5 @@ SOURCES += \
     system/core/Exception.cpp \
     system/core/ConnectedSystemNode.cpp \
     system/core/ConfigController.cpp \
-    system/web/model/AbstractModel.cpp
+    system/web/model/AbstractModel.cpp \
+    system/web/model/ModelManager.cpp

@@ -26,6 +26,8 @@
 
 #include "public_server_system_globals.h"
 
+#include <QtCore/QVariant>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -34,17 +36,23 @@ namespace Model
 {
 
 class AbstractModelPrivate;
+class ModelManager;
 
 class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
 {
         Q_OBJECT
+        friend class ModelManager;
     public:
         explicit AbstractModel(QObject *parent = 0);
+        AbstractModel(const AbstractModel & mo);
         virtual ~AbstractModel();
 
     protected:
         AbstractModel(AbstractModelPrivate * ptr, QObject *parent = 0);
         AbstractModelPrivate * d_ptr;
+
+        QVariant get(const QString & name) const;
+        void set(const QString & name, QVariant val);
 
     private:
         Q_DECLARE_PRIVATE(AbstractModel)

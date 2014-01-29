@@ -36,6 +36,13 @@ AbstractModel::AbstractModel(QObject *parent) :
 {
 }
 
+AbstractModel::AbstractModel(const AbstractModel &mo) :
+    AbstractModel(new AbstractModelPrivate, mo.parent())
+{
+    Q_D(AbstractModel);
+    d->doc = mo.d_ptr->doc;
+}
+
 AbstractModel::~AbstractModel()
 {
     delete d_ptr;
@@ -45,6 +52,20 @@ AbstractModel::AbstractModel(AbstractModelPrivate *ptr, QObject *parent) :
     QObject(parent),
     d_ptr(ptr)
 {
+}
+
+QVariant AbstractModel::get(const QString &name) const
+{
+    Q_D(const AbstractModel);
+
+    return d->doc->get(name);
+}
+
+void AbstractModel::set(const QString &name, QVariant val)
+{
+    Q_D(AbstractModel);
+
+    d->doc->set(name, val);
 }
 
 }

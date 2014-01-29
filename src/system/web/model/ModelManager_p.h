@@ -21,10 +21,9 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef ABSTRACTMODEL_P_H
-#define ABSTRACTMODEL_P_H
+#ifndef MODELMANAGER_P_H
+#define MODELMANAGER_P_H
 
-#include <Document.h>
 
 namespace PublicServerSystem
 {
@@ -33,14 +32,13 @@ namespace Web
 namespace Model
 {
 
-class AbstractModelPrivate
+class ModelManagerPrivate
 {
     public:
-        arangodb::Document * doc;
 };
 
 }
 }
 }
 
-#endif // ABSTRACTMODEL_P_H
+#endif // MODELMANAGER_P_H

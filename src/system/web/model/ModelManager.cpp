@@ -21,10 +21,9 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef ABSTRACTMODEL_P_H
-#define ABSTRACTMODEL_P_H
-
-#include <Document.h>
+#include "ModelManager.h"
+#include "ModelManager_p.h"
+#include "AbstractModel_p.h"
 
 namespace PublicServerSystem
 {
@@ -33,14 +32,31 @@ namespace Web
 namespace Model
 {
 
-class AbstractModelPrivate
+ModelManager::ModelManager(QObject *parent) :
+    ModelManager(new ModelManagerPrivate, parent)
 {
-    public:
-        arangodb::Document * doc;
-};
+    //
+}
+
+ModelList ModelManager::all()
+{
+    //
+}
+
+ModelManager::ModelManager(ModelManagerPrivate *ptr, QObject *parent) :
+    QObject(parent),
+    d_ptr(ptr)
+{
+    //
+}
+
+Q_GLOBAL_STATIC(arangodb::Arangodbdriver, gGetDriver)
+
+arangodb::Arangodbdriver *getArangoDriver()
+{
+    return gGetDriver();
+}
 
 }
 }
 }
-
-#endif // ABSTRACTMODEL_P_H
