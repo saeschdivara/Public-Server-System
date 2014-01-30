@@ -26,6 +26,7 @@
 
 #include "public_server_system_globals.h"
 
+#include <Document.h>
 #include <QtCore/QVariant>
 
 namespace PublicServerSystem
@@ -36,14 +37,14 @@ namespace Model
 {
 
 class AbstractModelPrivate;
-class ModelManager;
 
 class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
 {
         Q_OBJECT
-        friend class ModelManager;
+        //friend class ModelManager;
     public:
         explicit AbstractModel(QObject *parent = 0);
+        AbstractModel(arangodb::Document * doc, QObject *parent = 0);
         AbstractModel(const AbstractModel & mo);
         virtual ~AbstractModel();
 

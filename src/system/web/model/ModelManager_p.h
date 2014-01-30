@@ -24,6 +24,7 @@
 #ifndef MODELMANAGER_P_H
 #define MODELMANAGER_P_H
 
+#include <QueryBuilder.h>
 
 namespace PublicServerSystem
 {
@@ -35,6 +36,7 @@ namespace Model
 class ModelManagerPrivate
 {
     public:
+        arangodb::QueryBuilder qb;
 };
 
 }

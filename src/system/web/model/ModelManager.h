@@ -25,10 +25,12 @@
 #define MODELMANAGER_H
 
 #include "public_server_system_globals.h"
+#include "ModelManager_p.h"
 
 #include "system/web/model/AbstractModel.h"
 
-#include <Arangodbdriver.h>
+#include <ArangoDBDriver.h>
+#include <QueryBuilder.h>
 
 namespace PublicServerSystem
 {
@@ -39,25 +41,90 @@ namespace Model
 
 class ModelManagerPrivate;
 
-typedef QList<AbstractModel *> ModelList;
-
-class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager : public QObject
+template <class T>
+class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
 {
-        Q_OBJECT
     public:
-        explicit ModelManager(QObject *parent = 0);
+        explicit ModelManager();
+        virtual ~ModelManager();
+
+        typedef QList<T *> ModelList;
 
         ModelList all();
 
+        static arangodb::ArangoDBDriver * getArangoDriver();
+
     protected:
         ModelManagerPrivate * d_ptr;
-        ModelManager(ModelManagerPrivate * ptr, QObject *parent = 0);
+        ModelManager(ModelManagerPrivate * ptr);
+
+        arangodb::QueryBuilder * builder();
 
     private:
         Q_DECLARE_PRIVATE(ModelManager)
 };
 
-arangodb::Arangodbdriver * getArangoDriver();
+#define PU_DECLARE_MANAGER(Class) \
+    static PublicServerSystem::Web::Model::ModelManager<Class> * objects
+
+#define PU_DEFINE_MANAGER(Class) \
+    Q_GLOBAL_STATIC(PublicServerSystem::Web::Model::ModelManager<Class>, g##Class) \
+    \
+    PublicServerSystem::Web::Model::ModelManager<Class> * ClothingTimeModel::objects = g##Class();
+
+
+template <class T>
+ModelManager<T>::ModelManager() :
+    ModelManager(new ModelManagerPrivate)
+{
+    //
+}
+
+template <class T>
+ModelManager<T>::~ModelManager()
+{
+    delete d_ptr;
+}
+
+template <class T>
+ModelManager<T>::ModelManager(ModelManagerPrivate *ptr) :
+    d_ptr(ptr)
+{
+    //
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::all()
+{
+    auto driver = getArangoDriver();
+    auto select = builder()->createSelect(T::staticMetaObject.className(), 6);
+
+    auto cursor = driver->executeSelect(select);
+    cursor->waitForResult();
+
+    ModelManager::ModelList resultList;
+    auto dataList = cursor->data();
+    for ( auto dataDoc : dataList ) {
+            resultList << new T(dataDoc);
+        }
+
+    return resultList;
+}
+
+template <class T>
+arangodb::QueryBuilder *ModelManager<T>::builder()
+{
+    Q_D(ModelManager);
+    return &d->qb;
+}
+
+Q_GLOBAL_STATIC(arangodb::ArangoDBDriver, gGetDriver)
+
+template <class T>
+arangodb::ArangoDBDriver *ModelManager<T>::getArangoDriver()
+{
+    return gGetDriver();
+}
 
 }
 }

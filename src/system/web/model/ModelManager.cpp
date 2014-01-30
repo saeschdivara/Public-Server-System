@@ -22,7 +22,6 @@
  *********************************************************************************/
 
 #include "ModelManager.h"
-#include "ModelManager_p.h"
 #include "AbstractModel_p.h"
 
 namespace PublicServerSystem
@@ -32,30 +31,6 @@ namespace Web
 namespace Model
 {
 
-ModelManager::ModelManager(QObject *parent) :
-    ModelManager(new ModelManagerPrivate, parent)
-{
-    //
-}
-
-ModelList ModelManager::all()
-{
-    //
-}
-
-ModelManager::ModelManager(ModelManagerPrivate *ptr, QObject *parent) :
-    QObject(parent),
-    d_ptr(ptr)
-{
-    //
-}
-
-Q_GLOBAL_STATIC(arangodb::Arangodbdriver, gGetDriver)
-
-arangodb::Arangodbdriver *getArangoDriver()
-{
-    return gGetDriver();
-}
 
 }
 }

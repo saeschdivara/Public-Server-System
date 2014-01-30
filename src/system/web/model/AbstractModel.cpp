@@ -36,6 +36,13 @@ AbstractModel::AbstractModel(QObject *parent) :
 {
 }
 
+AbstractModel::AbstractModel(arangodb::Document *doc, QObject *parent) :
+    AbstractModel(parent)
+{
+    Q_D(AbstractModel);
+    d->doc = doc;
+}
+
 AbstractModel::AbstractModel(const AbstractModel &mo) :
     AbstractModel(new AbstractModelPrivate, mo.parent())
 {
