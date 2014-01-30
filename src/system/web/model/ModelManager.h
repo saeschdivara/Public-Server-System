@@ -30,6 +30,7 @@
 #include "system/web/model/AbstractModel.h"
 
 #include <ArangoDBDriver.h>
+#include <Document.h>
 #include <QueryBuilder.h>
 
 namespace PublicServerSystem
@@ -104,8 +105,10 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
 
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
-    for ( auto dataDoc : dataList ) {
-            resultList << new T(dataDoc);
+    for ( arangodb::Document * dataDoc : dataList ) {
+            dataDoc->sync();
+            dataDoc->waitForResult();
+            resultList << new T(dataDoc, 0);
         }
 
     return resultList;

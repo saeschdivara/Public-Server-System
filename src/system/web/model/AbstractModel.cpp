@@ -37,10 +37,8 @@ AbstractModel::AbstractModel(QObject *parent) :
 }
 
 AbstractModel::AbstractModel(arangodb::Document *doc, QObject *parent) :
-    AbstractModel(parent)
+    AbstractModel(doc, new AbstractModelPrivate, parent)
 {
-    Q_D(AbstractModel);
-    d->doc = doc;
 }
 
 AbstractModel::AbstractModel(const AbstractModel &mo) :
@@ -53,6 +51,13 @@ AbstractModel::AbstractModel(const AbstractModel &mo) :
 AbstractModel::~AbstractModel()
 {
     delete d_ptr;
+}
+
+AbstractModel::AbstractModel(arangodb::Document *doc, AbstractModelPrivate *ptr, QObject *parent) :
+    AbstractModel(ptr, parent)
+{
+    Q_D(AbstractModel);
+    d->doc = doc;
 }
 
 AbstractModel::AbstractModel(AbstractModelPrivate *ptr, QObject *parent) :
