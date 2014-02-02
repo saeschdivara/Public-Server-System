@@ -58,7 +58,7 @@ ModelForm<T>::ModelForm(T *model) :
 template <class T>
 QList<AbstractFormField *> ModelForm<T>::getAllFields()
 {
-    QMetaObject * metaObj = m_model->metaObject();
+    const QMetaObject * metaObj = m_model->metaObject();
     int start = metaObj->propertyOffset();
     int count = metaObj->propertyCount();
 
@@ -69,8 +69,9 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields()
     for (int i = start; i < count; ++i) {
             QMetaProperty prop = metaObj->property(i);
             QVariant propValue = prop.read(m_model);
+            qDebug() << "prop" << propValue;
             if (propValue.canConvert(fieldMetaID)) {
-                    AbstractFormField * field = propValue.convert(fieldMetaID);
+                    AbstractFormField * field = propValue.value<AbstractFormField *>();
                     fields.append(field);
                     qDebug() << field;
                 }

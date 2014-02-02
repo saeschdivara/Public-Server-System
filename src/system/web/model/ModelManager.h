@@ -52,6 +52,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         typedef QList<T *> ModelList;
 
         ModelList all();
+        T * get(const QString & id);
 
         static arangodb::ArangoDBDriver * getArangoDriver();
 
@@ -112,6 +113,20 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
         }
 
     return resultList;
+}
+
+template <class T>
+T * ModelManager<T>::get(const QString &id)
+{
+    QString realID(T::staticMetaObject.className());
+    realID += QLatin1Char('/') + id;
+
+    arangodb::Document * modelDoc = getArangoDriver()->getDocument(realID);
+    modelDoc->sync();
+    modelDoc->waitForResult();
+    T * model = new T(modelDoc, 0);
+
+    return model;
 }
 
 template <class T>
