@@ -56,5 +56,4 @@ SOURCES += \
     system/core/ConnectedSystemNode.cpp \
     system/core/ConfigController.cpp \
     system/web/model/AbstractModel.cpp \
-    system/web/model/ModelManager.cpp \
     system/web/form/ModelForm.cpp
