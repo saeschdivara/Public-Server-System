@@ -43,7 +43,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
     public:
         virtual ~ViewInterface() {}
 
-        virtual void render(Grantlee::Engine * templateEngine, QTextStream & stream) = 0;
+        virtual void render(QTextStream & stream, Grantlee::Engine * templateEngine, Grantlee::Context * requestContext) = 0;
 };
 
 }

@@ -35,6 +35,8 @@
 #include <url.h>
 // Qt
 #include <QtCore/QBuffer>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtCore/QHash>
 #include <QtCore/QTextCodec>
 #include <QtCore/QTextStream>
@@ -49,16 +51,30 @@ namespace Web
 class ServerPrivate
 {
     public:
+        // -----------[PROPERTIES] -----------
         QHash<QString, AbstractSite *> websites;
         // Servers
         Tufao::HttpServer * normalServer = Q_NULLPTR;
         Tufao::HttpsServer* secureServer = Q_NULLPTR;
         // Static files
-        Tufao::HttpFileServer * staticFileServer = Q_NULLPTR;
+        QString diskStaticFilesPath;
         QString staticFilesPath;
         // Secure data
         QSslKey privateKey;
         QSslCertificate certificate;
+
+        // -----------[METHODS] -----------
+        Grantlee::Context getSessionContext(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response) {
+            Grantlee::Context context;
+
+            // Server
+            context.insert("STATICS_PATH", staticFilesPath + QLatin1Char('/'));
+
+            // Session
+            //
+
+            return context;
+        }
 };
 
 Server::Server(QObject *parent) :
@@ -103,7 +119,7 @@ bool Server::listenOnNormalConnections(const QHostAddress &address, quint16 port
 void Server::setStaticFilesDir(const QString &dir, const QString &websitePath)
 {
     Q_D(Server);
-    d->staticFileServer = new Tufao::HttpFileServer(dir, this);
+    d->diskStaticFilesPath = dir;
     d->staticFilesPath = websitePath;
 }
 
@@ -161,7 +177,9 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
         if (urlPath.startsWith(QLatin1Char('/') + d->staticFilesPath + QLatin1Char('/'))) {
-                d->staticFileServer->handleRequest(request, response);
+                if (!serveStaticFile(request, response)) {
+                        Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The file doesn't exists"));
+                    }
             }
         else {
                 View::ViewInterface * view = site->view(urlPath);
@@ -173,7 +191,8 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
                 stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-                view->render(site->templateEngine(), stream);
+                Grantlee::Context context = d->getSessionContext(request, response);
+                view->render(stream, site->templateEngine(), &context);
 
                 buffer.close();
 
@@ -192,6 +211,28 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
         response->end("Error");
     }
 
+}
+
+bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
+{
+    Q_D(Server);
+    QString resource(QByteArray::fromPercentEncoding(Tufao::Url(request->url())
+                                                     .path().toUtf8()));
+
+    resource.replace(d->staticFilesPath + QLatin1Char('/'), "");
+    QString fileName(QDir::cleanPath(d->diskStaticFilesPath
+                                     + QDir::toNativeSeparators(resource)));
+    if (!fileName.startsWith(d->diskStaticFilesPath + QDir::separator()))
+        return false;
+
+    {
+        QFileInfo fileInfo(fileName);
+        if (!fileInfo.exists() || !fileInfo.isFile())
+            return false;
+    }
+
+    Tufao::HttpFileServer::serveFile(fileName, request, response);
+    return true;
 }
 
 }

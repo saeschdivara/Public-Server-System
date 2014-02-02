@@ -71,6 +71,9 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
         void clientConnectionReady(Tufao::HttpServerRequest *request,
                                    Tufao::HttpServerResponse *response);
 
+        bool serveStaticFile(Tufao::HttpServerRequest *request,
+                              Tufao::HttpServerResponse *response);
+
     private:
         Q_DECLARE_PRIVATE(Server)
 };
