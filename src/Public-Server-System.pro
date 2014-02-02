@@ -45,7 +45,8 @@ HEADERS += \
     system/web/model/AbstractModel.h \
     system/web/model/AbstractModel_p.h \
     system/web/model/ModelManager.h \
-    system/web/model/ModelManager_p.h
+    system/web/model/ModelManager_p.h \
+    system/web/form/ModelForm.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -55,4 +56,5 @@ SOURCES += \
     system/core/ConnectedSystemNode.cpp \
     system/core/ConfigController.cpp \
     system/web/model/AbstractModel.cpp \
-    system/web/model/ModelManager.cpp
+    system/web/model/ModelManager.cpp \
+    system/web/form/ModelForm.cpp
