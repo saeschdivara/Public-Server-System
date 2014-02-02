@@ -27,12 +27,8 @@ namespace PublicServerSystem
 {
 namespace Web
 {
-namespace Model
+namespace Form
 {
-
-ModelForm::ModelForm()
-{
-}
 
 }
 }

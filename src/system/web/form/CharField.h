@@ -21,14 +21,10 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef MODELFORM_H
-#define MODELFORM_H
-
-#include "public_server_system_globals.h"
+#ifndef CHARFIELD_H
+#define CHARFIELD_H
 
 #include "AbstractFormField.h"
-
-#include <QtCore/QMetaProperty>
 
 namespace PublicServerSystem
 {
@@ -37,50 +33,15 @@ namespace Web
 namespace Form
 {
 
-template <class T>
-class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
+class CharField : public AbstractFormField
 {
+        Q_OBJECT
     public:
-        ModelForm(T * model);
-
-        QList<AbstractFormField *> getAllFields();
-
-    protected:
-        T * m_model;
+        explicit CharField(QObject *parent = 0);
 };
 
-template <class T>
-ModelForm<T>::ModelForm(T *model) :
-    m_model(model)
-{
-}
-
-template <class T>
-QList<AbstractFormField *> ModelForm<T>::getAllFields()
-{
-    QMetaObject * metaObj = m_model->metaObject();
-    int start = metaObj->propertyOffset();
-    int count = metaObj->propertyCount();
-
-    int fieldMetaID = getAbstractFormFieldMetaID();
-
-    QList<AbstractFormField *> fields;
-
-    for (int i = start; i < count; ++i) {
-            QMetaProperty prop = metaObj->property(i);
-            QVariant propValue = prop.read(m_model);
-            if (propValue.canConvert(fieldMetaID)) {
-                    AbstractFormField * field = propValue.convert(fieldMetaID);
-                    fields.append(field);
-                    qDebug() << field;
-                }
-        }
-
-    return fields;
-}
-
 }
 }
 }
 
-#endif // MODELFORM_H
+#endif // CHARFIELD_H
