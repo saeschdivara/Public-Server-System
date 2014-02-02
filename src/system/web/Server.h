@@ -54,6 +54,9 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
         // Normal listening
         bool listenOnNormalConnections(const QHostAddress &address = QHostAddress::Any,
                                        quint16 port = 80);
+
+        void setStaticFilesDir(const QString & dir, const QString & websitePath);
+
         // Secure listening
         bool listenOnSecureConnections(const QHostAddress &address = QHostAddress::Any,
                                        quint16 port = 443);

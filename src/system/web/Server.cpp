@@ -29,6 +29,7 @@
 #include <lib/cachingloaderdecorator.h>
 // Tufao
 #include <headers.h>
+#include <httpfileserver.h>
 #include <httpserverrequest.h>
 #include <httpserverresponse.h>
 #include <url.h>
@@ -52,6 +53,9 @@ class ServerPrivate
         // Servers
         Tufao::HttpServer * normalServer = Q_NULLPTR;
         Tufao::HttpsServer* secureServer = Q_NULLPTR;
+        // Static files
+        Tufao::HttpFileServer * staticFileServer = Q_NULLPTR;
+        QString staticFilesPath;
         // Secure data
         QSslKey privateKey;
         QSslCertificate certificate;
@@ -96,6 +100,13 @@ bool Server::listenOnNormalConnections(const QHostAddress &address, quint16 port
     return isListening;
 }
 
+void Server::setStaticFilesDir(const QString &dir, const QString &websitePath)
+{
+    Q_D(Server);
+    d->staticFileServer = new Tufao::HttpFileServer(dir, this);
+    d->staticFilesPath = websitePath;
+}
+
 bool Server::listenOnSecureConnections(const QHostAddress &address, quint16 port)
 {
     Q_D(Server);
@@ -138,31 +149,39 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
     Tufao::Url url(Tufao::Url::url(request));
     Tufao::Headers headers = request->headers();
 
-    qDebug() << url.hostname();
+    QString hostname = url.hostname();
+    QString urlPath = url.path();
+
+    qDebug() << hostname << urlPath;
     qDebug() << headers;
 
-    AbstractSite * site = d->websites.value(url.hostname(), Q_NULLPTR);
+    AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
     try {
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
-        View::ViewInterface * view = site->view(url.path());
+        if (urlPath.startsWith(QLatin1Char('/') + d->staticFilesPath + QLatin1Char('/'))) {
+                d->staticFileServer->handleRequest(request, response);
+            }
+        else {
+                View::ViewInterface * view = site->view(urlPath);
 
-        QBuffer buffer;
-        buffer.open(QIODevice::ReadWrite);
+                QBuffer buffer;
+                buffer.open(QIODevice::ReadWrite);
 
-        QTextStream stream(&buffer);
+                QTextStream stream(&buffer);
 
-        stream.setCodec(QTextCodec::codecForName("UTF-8"));
+                stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-        view->render(site->templateEngine(), stream);
+                view->render(site->templateEngine(), stream);
 
-        buffer.close();
+                buffer.close();
 
-        QByteArray renderedView = buffer.data();
+                QByteArray renderedView = buffer.data();
 
-        response->writeHead(Tufao::HttpServerResponse::OK);
-        response->end(renderedView);
+                response->writeHead(Tufao::HttpServerResponse::OK);
+                response->end(renderedView);
+            }
     }
     catch(Core::Exception ex) {
         response->writeHead(Core::errorCodeToStatusCode(ex.code()));
