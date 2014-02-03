@@ -24,7 +24,11 @@
 #ifndef ABSTRACTMODEL_P_H
 #define ABSTRACTMODEL_P_H
 
+#include <QtCore/QHash>
+
 #include <Document.h>
+
+#include <system/web/form/AbstractFormField.h>
 
 namespace PublicServerSystem
 {
@@ -37,6 +41,7 @@ class AbstractModelPrivate
 {
     public:
         arangodb::Document * doc;
+        QHash<QString, PublicServerSystem::Web::Form::AbstractFormField *> fields;
 };
 
 }

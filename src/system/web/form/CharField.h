@@ -37,7 +37,7 @@ class CharField : public AbstractFormField
 {
         Q_OBJECT
     public:
-        explicit CharField(QObject *parent = 0);
+        Q_INVOKABLE explicit CharField(QObject *parent = 0);
 };
 
 }

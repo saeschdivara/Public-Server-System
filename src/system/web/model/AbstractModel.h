@@ -25,8 +25,11 @@
 #define ABSTRACTMODEL_H
 
 #include "public_server_system_globals.h"
+#include "system/web/form/AbstractFormField.h"
 
 #include <Document.h>
+
+#include <QtCore/QMetaObject>
 #include <QtCore/QVariant>
 
 namespace PublicServerSystem
@@ -41,7 +44,6 @@ class AbstractModelPrivate;
 class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
 {
         Q_OBJECT
-        //friend class ModelManager;
     public:
         explicit AbstractModel(QObject *parent = 0);
         AbstractModel(arangodb::Document * doc, QObject *parent = 0);
@@ -55,6 +57,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
 
         QVariant get(const QString & name) const;
         void set(const QString & name, QVariant val);
+
+        Form::AbstractFormField * field(const QString & referencingPropertyName, const QMetaObject &fieldClassObj);
 
     private:
         Q_DECLARE_PRIVATE(AbstractModel)

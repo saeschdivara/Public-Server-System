@@ -69,11 +69,9 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields()
     for (int i = start; i < count; ++i) {
             QMetaProperty prop = metaObj->property(i);
             QVariant propValue = prop.read(m_model);
-            qDebug() << "prop" << propValue;
             if (propValue.canConvert(fieldMetaID)) {
                     AbstractFormField * field = propValue.value<AbstractFormField *>();
                     fields.append(field);
-                    qDebug() << field;
                 }
         }
 
