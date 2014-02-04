@@ -59,6 +59,13 @@ void AbstractFormField::setValue(QVariant val)
     d->fieldValue = val;
 }
 
+Widget::WidgetInterface *AbstractFormField::widget() const
+{
+    Q_D(const AbstractFormField);
+
+    return d->widget;
+}
+
 AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, QObject *parent) :
     QObject(parent),
     d_ptr(ptr)

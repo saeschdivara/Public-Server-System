@@ -26,6 +26,8 @@
 
 #include "public_server_system_globals.h"
 
+#include "widget/WidgetInterface.h"
+
 class QVariant;
 
 namespace PublicServerSystem
@@ -48,6 +50,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
 
         QVariant value() const;
         void setValue(QVariant val);
+
+        Widget::WidgetInterface * widget() const;
 
     protected:
         AbstractFormField(AbstractFormFieldPrivate * ptr, QObject * parent = 0);
