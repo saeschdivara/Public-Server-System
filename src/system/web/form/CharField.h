@@ -33,11 +33,16 @@ namespace Web
 namespace Form
 {
 
+class CharFieldPrivate;
+
 class CharField : public AbstractFormField
 {
         Q_OBJECT
     public:
         Q_INVOKABLE explicit CharField(QObject *parent = 0);
+
+    private:
+        Q_DECLARE_PRIVATE(CharField)
 };
 
 }

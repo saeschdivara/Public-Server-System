@@ -48,7 +48,8 @@ HEADERS += \
     system/web/model/ModelManager_p.h \
     system/web/form/ModelForm.h \
     system/web/form/AbstractFormField.h \
-    system/web/form/CharField.h
+    system/web/form/CharField.h \
+    system/web/form/AbstractFormField_p.h
 
 SOURCES += \
     system/core/System.cpp \

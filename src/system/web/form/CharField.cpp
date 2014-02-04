@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "CharField.h"
+#include "AbstractFormField_p.h"
 
 namespace PublicServerSystem
 {
@@ -30,8 +31,13 @@ namespace Web
 namespace Form
 {
 
+class CharFieldPrivate : public AbstractFormFieldPrivate
+{
+    public:
+};
+
 CharField::CharField(QObject *parent) :
-    AbstractFormField(parent)
+    AbstractFormField(new CharFieldPrivate, parent)
 {
 }
 

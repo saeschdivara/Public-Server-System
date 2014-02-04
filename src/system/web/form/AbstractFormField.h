@@ -26,6 +26,8 @@
 
 #include "public_server_system_globals.h"
 
+class QVariant;
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -35,11 +37,24 @@ namespace Form
 
 int getAbstractFormFieldMetaID();
 
+class AbstractFormFieldPrivate;
+
 class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
 {
         Q_OBJECT
     public:
         explicit AbstractFormField(QObject *parent = 0);
+        virtual ~AbstractFormField();
+
+        QVariant value() const;
+        void setValue(QVariant val);
+
+    protected:
+        AbstractFormField(AbstractFormFieldPrivate * ptr, QObject * parent = 0);
+        AbstractFormFieldPrivate * d_ptr;
+
+    private:
+        Q_DECLARE_PRIVATE(AbstractFormField)
 };
 
 }

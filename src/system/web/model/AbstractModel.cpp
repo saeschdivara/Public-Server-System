@@ -84,12 +84,19 @@ Form::AbstractFormField *AbstractModel::field(const QString &referencingProperty
 {
     Q_D(AbstractModel);
 
-    if (d->fields.contains(referencingPropertyName)) {
-            return d->fields.value(referencingPropertyName);
-        }
+    Form::AbstractFormField * thisField;
 
-    Form::AbstractFormField * thisField = qobject_cast<Form::AbstractFormField *>(fieldClassObj.newInstance(Q_ARG(QObject *, 0)));
-    d->fields.insert(referencingPropertyName, thisField);
+    // If the field has already been created
+    if (d->fields.contains(referencingPropertyName)) {
+            thisField = d->fields.value(referencingPropertyName);
+        }
+    else {
+        thisField = qobject_cast<Form::AbstractFormField *>(fieldClassObj.newInstance(Q_ARG(QObject *, 0)));
+        d->fields.insert(referencingPropertyName, thisField);
+    }
+
+    // Get current value for the field
+    thisField->setValue(d->doc->get(referencingPropertyName));
 
     return thisField;
 }

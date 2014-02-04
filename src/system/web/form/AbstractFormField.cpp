@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "AbstractFormField.h"
+#include "AbstractFormField_p.h"
 
 namespace PublicServerSystem
 {
@@ -36,7 +37,31 @@ int getAbstractFormFieldMetaID()
 }
 
 AbstractFormField::AbstractFormField(QObject *parent) :
-    QObject(parent)
+    AbstractFormField(new AbstractFormFieldPrivate, parent)
+{
+}
+
+AbstractFormField::~AbstractFormField()
+{
+    delete d_ptr;
+}
+
+QVariant AbstractFormField::value() const
+{
+    Q_D(const AbstractFormField);
+
+    return d->fieldValue;
+}
+
+void AbstractFormField::setValue(QVariant val)
+{
+    Q_D(AbstractFormField);
+    d->fieldValue = val;
+}
+
+AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, QObject *parent) :
+    QObject(parent),
+    d_ptr(ptr)
 {
 }
 
