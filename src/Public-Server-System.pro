@@ -32,6 +32,9 @@ DEPENDPATH += $$PWD/../3rdparty/arangodb-driver/src/
 INCLUDEPATH += $$PWD/../3rdparty/grantlee/templates/
 DEPENDPATH += $$PWD/../3rdparty/grantlee/templates/
 
+INCLUDEPATH += $$PWD/../3rdparty/smpt-client-qt/src/
+DEPENDPATH += $$PWD/../3rdparty/smpt-client-qt/src/
+
 HEADERS += \
     public_server_system_globals.h \
     system/core/System.h \
