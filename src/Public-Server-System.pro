@@ -54,7 +54,8 @@ HEADERS += \
     system/web/form/AbstractFormField_p.h \
     system/web/form/widget/WidgetInterface.h \
     system/web/form/widget/EmptyWidget.h \
-    system/web/form/widget/TextInput.h
+    system/web/form/widget/TextInput.h \
+    system/email/SmtpServer.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -66,4 +67,5 @@ SOURCES += \
     system/web/model/AbstractModel.cpp \
     system/web/form/ModelForm.cpp \
     system/web/form/AbstractFormField.cpp \
-    system/web/form/CharField.cpp
+    system/web/form/CharField.cpp \
+    system/email/SmtpServer.cpp
