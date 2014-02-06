@@ -58,7 +58,8 @@ HEADERS += \
     system/web/form/widget/WidgetInterface.h \
     system/web/form/widget/EmptyWidget.h \
     system/web/form/widget/TextInput.h \
-    system/email/SmtpServer.h
+    system/email/SmtpServer.h \
+    system/email/Mail.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -71,4 +72,5 @@ SOURCES += \
     system/web/form/ModelForm.cpp \
     system/web/form/AbstractFormField.cpp \
     system/web/form/CharField.cpp \
-    system/email/SmtpServer.cpp
+    system/email/SmtpServer.cpp \
+    system/email/Mail.cpp
