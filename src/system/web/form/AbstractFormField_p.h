@@ -1,6 +1,8 @@
 #ifndef ABSTRACTFORMFIELD_P_H
 #define ABSTRACTFORMFIELD_P_H
 
+#include "widget/WidgetInterface.h"
+
 #include <QtCore/QVariant>
 
 namespace PublicServerSystem
@@ -14,6 +16,8 @@ class AbstractFormFieldPrivate
 {
     public:
         QVariant fieldValue;
+
+        Widget::WidgetInterface * widget;
 };
 
 }

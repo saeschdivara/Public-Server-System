@@ -49,7 +49,10 @@ HEADERS += \
     system/web/form/ModelForm.h \
     system/web/form/AbstractFormField.h \
     system/web/form/CharField.h \
-    system/web/form/AbstractFormField_p.h
+    system/web/form/AbstractFormField_p.h \
+    system/web/form/widget/WidgetInterface.h \
+    system/web/form/widget/EmptyWidget.h \
+    system/web/form/widget/TextInput.h
 
 SOURCES += \
     system/core/System.cpp \

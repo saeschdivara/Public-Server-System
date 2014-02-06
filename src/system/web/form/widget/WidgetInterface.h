@@ -21,14 +21,12 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef MODELFORM_H
-#define MODELFORM_H
+#ifndef WIDGETINTERFACE_H
+#define WIDGETINTERFACE_H
 
 #include "public_server_system_globals.h"
 
-#include "AbstractFormField.h"
-
-#include <QtCore/QMetaProperty>
+class QVariant;
 
 namespace PublicServerSystem
 {
@@ -36,65 +34,20 @@ namespace Web
 {
 namespace Form
 {
+namespace Widget
+{
 
-template <class T>
-class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
+class PUBLICSERVERSYSTEMSHARED_EXPORT WidgetInterface
 {
     public:
-        ModelForm(T * model);
+        virtual ~WidgetInterface() {}
 
-        QList<AbstractFormField *> getAllFields() const;
-
-        QString toString() const;
-
-    protected:
-        T * m_model;
+        virtual QString toString() const = 0;
 };
 
-template <class T>
-ModelForm<T>::ModelForm(T *model) :
-    m_model(model)
-{
 }
-
-template <class T>
-QList<AbstractFormField *> ModelForm<T>::getAllFields() const
-{
-    const QMetaObject metaObj = T::staticMetaObject;
-    int start = metaObj.propertyOffset();
-    int count = metaObj.propertyCount();
-
-    int fieldMetaID = getAbstractFormFieldMetaID();
-
-    QList<AbstractFormField *> fields;
-
-    for (int i = start; i < count; ++i) {
-            QMetaProperty prop = metaObj.property(i);
-            QVariant propValue = prop.read(m_model);
-            if (propValue.canConvert(fieldMetaID)) {
-                    AbstractFormField * field = propValue.value<AbstractFormField *>();
-                    fields.append(field);
-                }
-        }
-
-    return fields;
-}
-
-template <class T>
-QString ModelForm<T>::toString() const
-{
-    QString output;
-    QList<AbstractFormField *> fields = getAllFields();
-
-    for ( AbstractFormField * field : fields ) {
-            output += field->widget()->toString();
-        }
-
-    return output;
-}
-
 }
 }
 }
 
-#endif // MODELFORM_H
+#endif // WIDGETINTERFACE_H

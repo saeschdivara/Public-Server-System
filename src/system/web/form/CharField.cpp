@@ -24,6 +24,8 @@
 #include "CharField.h"
 #include "AbstractFormField_p.h"
 
+#include "system/web/form/widget/TextInput.h"
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -39,6 +41,9 @@ class CharFieldPrivate : public AbstractFormFieldPrivate
 CharField::CharField(QObject *parent) :
     AbstractFormField(new CharFieldPrivate, parent)
 {
+    Q_D(CharField);
+
+    d->widget = new Widget::TextInput;
 }
 
 }
