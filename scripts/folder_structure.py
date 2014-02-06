@@ -38,7 +38,12 @@ os.mkdir("dist/3rdparty/grantlee/i18n/release")
 os.mkdir("dist/3rdparty/grantlee/loadertags")
 os.mkdir("dist/3rdparty/grantlee/loadertags/debug")
 os.mkdir("dist/3rdparty/grantlee/loadertags/release")
-#   - scriptable-library
+#   - template_library
 os.mkdir("dist/3rdparty/grantlee/template_library")
 os.mkdir("dist/3rdparty/grantlee/template_library/debug")
 os.mkdir("dist/3rdparty/grantlee/template_library/release")
+
+# smpt-client-qt
+os.mkdir("dist/3rdparty/smpt-client-qt")
+os.mkdir("dist/3rdparty/smpt-client-qt/debug")
+os.mkdir("dist/3rdparty/smpt-client-qt/release")
