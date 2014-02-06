@@ -10,3 +10,6 @@
 [submodule "3rdparty/arangodb-driver"]
 	path = 3rdparty/arangodb-driver
 	url = git@github.com:saeschdivara/Qt-Arango-DB-Driver.git
+[submodule "3rdparty/smpt-client-qt"]
+	path = 3rdparty/smpt-client-qt
+	url = git@github.com:saeschdivara/SmtpClient-for-Qt.git
