@@ -60,8 +60,8 @@ HEADERS += \
     system/web/form/widget/TextInput.h \
     system/email/SmtpServer.h \
     system/email/Mail.h \
-    system/rpc/Server.h \
-    system/rpc/Server_p.h
+    system/rpc/RpcServer.h \
+    system/rpc/RpcServer_p.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -76,4 +76,4 @@ SOURCES += \
     system/web/form/CharField.cpp \
     system/email/SmtpServer.cpp \
     system/email/Mail.cpp \
-    system/rpc/Server.cpp
+    system/rpc/RpcServer.cpp

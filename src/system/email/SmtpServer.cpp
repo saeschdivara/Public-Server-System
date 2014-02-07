@@ -1,5 +1,5 @@
 #include "SmtpServer.h"
-#include "system/rpc/Server_p.h"
+#include "system/rpc/RpcServer_p.h"
 
 #include <smtpclient.h>
 
@@ -12,7 +12,7 @@ namespace PublicServerSystem
 namespace Email
 {
 
-class SmtpServerPrivate : Rpc::ServerPrivate
+class SmtpServerPrivate : public Rpc::ServerPrivate
 {
     public:
         QQueue<Mail *> mailQueue;
@@ -20,20 +20,34 @@ class SmtpServerPrivate : Rpc::ServerPrivate
 
 class Producer : public QRunnable
 {
-        // QRunnable interface
     public:
-        void run() {
+        Producer(SmtpServerPrivate * smtpPrivate) :
+            m_serverPrivate(smtpPrivate)
+        {
+        }
+
+        virtual void run() {
             //
         }
+
+    protected:
+        SmtpServerPrivate * m_serverPrivate;
 };
 
 class Consumer : public QRunnable
 {
-        // QRunnable interface
     public:
-        void run() {
+        Consumer(SmtpServerPrivate * smtpPrivate) :
+            m_serverPrivate(smtpPrivate)
+        {
+        }
+
+        virtual void run() {
             //
         }
+
+    protected:
+        SmtpServerPrivate * m_serverPrivate;
 };
 
 SmtpServer::SmtpServer(QObject *parent) :

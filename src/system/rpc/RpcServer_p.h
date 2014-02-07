@@ -1,6 +1,8 @@
 #ifndef SERVER_P_H
 #define SERVER_P_H
 
+#include <httpserver.h>
+
 namespace PublicServerSystem
 {
 namespace Rpc
@@ -9,6 +11,7 @@ namespace Rpc
 class ServerPrivate
 {
     public:
+        Tufao::HttpServer * server;
 };
 
 }
