@@ -1,11 +1,15 @@
 #include "SmtpServer.h"
 #include "system/rpc/RpcServer_p.h"
 
+// Smptp Client
 #include <smtpclient.h>
 
+// Qt
 #include <QtCore/QQueue>
 #include <QtCore/QRunnable>
 #include <QtCore/QThreadPool>
+
+#include <functional>
 
 namespace PublicServerSystem
 {
@@ -53,6 +57,18 @@ class Consumer : public QRunnable
 SmtpServer::SmtpServer(QObject *parent) :
     Rpc::Server(new SmtpServerPrivate, parent)
 {
+}
+
+void SmtpServer::listen(const QHostAddress &address, quint16 port)
+{
+    Rpc::Server::listen(address, port);
+
+    addCommand("^/email/send/", std::bind(&SmtpServer::sendEmailRpc, this));
+}
+
+QString SmtpServer::sendEmailRpc()
+{
+    return QString();
 }
 
 }

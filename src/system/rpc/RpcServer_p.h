@@ -1,6 +1,10 @@
 #ifndef SERVER_P_H
 #define SERVER_P_H
 
+// std
+#include <functional>
+
+// Tufao
 #include <httpserver.h>
 
 namespace PublicServerSystem
@@ -12,6 +16,7 @@ class ServerPrivate
 {
     public:
         Tufao::HttpServer * server;
+        QList< QPair< QString, std::function<QString()> > > commands;
 };
 
 }

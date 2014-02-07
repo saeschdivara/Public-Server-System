@@ -2,6 +2,17 @@
 
 #include "RpcServer_p.h"
 
+// Tufao
+#include <headers.h>
+#include <httpserverrequest.h>
+#include <httpserverresponse.h>
+#include <url.h>
+
+// Qt
+#include <QtCore/QBuffer>
+#include <QtCore/QRegularExpression>
+#include <QtCore/QTextCodec>
+
 namespace PublicServerSystem
 {
 namespace Rpc
@@ -20,15 +31,20 @@ Server::~Server()
     delete d_ptr;
 }
 
-void Server::addCommand(const QString &requestRegex)
+void Server::addCommand(const QString &requestRegex, std::function<QString()> fnc)
 {
-    //
+    Q_D(Server);
+    d->commands.append(qMakePair< QString, std::function<QString()> >(requestRegex, fnc));
 }
 
 void Server::listen(const QHostAddress &address, quint16 port)
 {
     Q_D(Server);
     d->server->listen(address, port);
+
+    QObject::connect( d->server, &Tufao::HttpServer::requestReady,
+                      this, &Server::handleConnection
+                      );
 }
 
 Server::Server(ServerPrivate *ptr, QObject *parent) :
@@ -36,6 +52,48 @@ Server::Server(ServerPrivate *ptr, QObject *parent) :
     d_ptr(ptr)
 {
     ptr->server = new Tufao::HttpServer;
+}
+
+void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
+{
+    Q_D(Server);
+
+    Tufao::Url url(Tufao::Url::url(request));
+    Tufao::Headers headers = request->headers();
+
+    QString hostname = url.hostname();
+    QString urlPath = url.path();
+
+    for( QPair< QString, std::function<QString()> > pair : d->commands ) {
+        QString regexString = pair.first;
+        QRegularExpression re(regexString);
+        QRegularExpressionMatch match = re.match(urlPath);
+        bool hasMatch = match.hasMatch();
+
+        if (hasMatch) {
+            auto commandFunction = pair.second;
+
+            QBuffer buffer;
+            buffer.open(QIODevice::ReadWrite);
+
+            QTextStream stream(&buffer);
+
+            stream.setCodec(QTextCodec::codecForName("UTF-8"));
+
+            stream << commandFunction();
+
+            buffer.close();
+
+            QByteArray renderedView = buffer.data();
+
+            response->writeHead(Tufao::HttpServerResponse::OK);
+            response->end(renderedView);
+        }
+        else {
+            response->writeHead(Tufao::HttpServerResponse::NOT_FOUND);
+            response->end("Not found");
+        }
+    }
 }
 
 }

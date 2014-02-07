@@ -1,10 +1,17 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef RPCSERVER_H
+#define RPCSERVER_H
 
 #include "public_server_system_globals.h"
 
 #include "system/core/ServerInterface.h"
 
+// std
+#include <functional>
+
+// Tufao
+#include <httpserver.h>
+
+// Qt
 #include <QtNetwork/QHostAddress>
 
 namespace PublicServerSystem
@@ -21,13 +28,16 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
         explicit Server(QObject *parent = 0);
         virtual ~Server();
 
-        void listen(const QHostAddress & address = QHostAddress::Any, quint16 port = 7210);
+        virtual void listen(const QHostAddress & address = QHostAddress::Any, quint16 port = 7210);
 
-        void addCommand(const QString & requestRegex);
+        void addCommand(const QString & requestRegex, std::function<QString()> fnc);
 
     protected:
         Server(ServerPrivate * ptr, QObject *parent = 0);
         ServerPrivate * d_ptr;
+
+    protected Q_SLOTS:
+        void handleConnection(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response);
 
     private:
         Q_DECLARE_PRIVATE(Server)
@@ -36,4 +46,4 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
 }
 }
 
-#endif // SERVER_H
+#endif // RPCSERVER_H
