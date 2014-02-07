@@ -1,9 +1,7 @@
 #ifndef SMTPSERVER_H
 #define SMTPSERVER_H
 
-#include "public_server_system_globals.h"
-
-#include "system/core/ServerInterface.h"
+#include "system/rpc/Server.h"
 #include "system/email/Mail.h"
 
 namespace PublicServerSystem
@@ -13,7 +11,7 @@ namespace Email
 
 class SmtpServerPrivate;
 
-class SmtpServer : public Core::ServerInterface
+class PUBLICSERVERSYSTEMSHARED_EXPORT SmtpServer : public Rpc::Server
 {
         Q_OBJECT
     public:

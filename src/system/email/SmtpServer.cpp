@@ -1,4 +1,6 @@
 #include "SmtpServer.h"
+#include "system/rpc/Server_p.h"
+
 #include <smtpclient.h>
 
 #include <QtCore/QQueue>
@@ -10,7 +12,7 @@ namespace PublicServerSystem
 namespace Email
 {
 
-class SmtpServerPrivate
+class SmtpServerPrivate : Rpc::ServerPrivate
 {
     public:
         QQueue<Mail *> mailQueue;
@@ -35,8 +37,7 @@ class Consumer : public QRunnable
 };
 
 SmtpServer::SmtpServer(QObject *parent) :
-    QObject(parent),
-    d_ptr(new SmtpServerPrivate)
+    Rpc::Server(new SmtpServerPrivate, parent)
 {
 }
 

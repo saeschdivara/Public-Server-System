@@ -10,7 +10,7 @@ namespace Email
 
 class MailPrivate;
 
-class Mail
+class PUBLICSERVERSYSTEMSHARED_EXPORT Mail
 {
     public:
         Mail();
