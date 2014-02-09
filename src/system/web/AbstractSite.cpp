@@ -47,7 +47,10 @@ AbstractSite::AbstractSite(AbstractSitePrivate *pri, QObject *parent) :
 
 AbstractSite::~AbstractSite()
 {
-    qDeleteAll(d_ptr->views);
+    const int total = d_ptr->views.length();
+    for (int i = 0; i < total; ++i) {
+        delete d_ptr->views.at(i).second;
+    }
 
     delete d_ptr;
 }
@@ -55,22 +58,22 @@ AbstractSite::~AbstractSite()
 void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
 {
     Q_D(AbstractSite);
-    d->views.insert(urlRegex, view);
+    d->views.append(qMakePair<QString, View::ViewInterface *>(urlRegex, view));
 }
 
 View::ViewInterface *AbstractSite::view(const QString &urlPath) const
 {
     Q_D(const AbstractSite);
-    for ( auto urlRegex : d->views.keys() ) {
-            qDebug() << urlRegex;
+    for( QPair<QString, View::ViewInterface *> pair : d->views ) {
+        QString urlRegex = pair.first;
 
-            QRegularExpression regex(urlRegex);
-            QRegularExpressionMatch match = regex.match(urlPath);
-            bool hasMatch = match.hasMatch(); // true
-            if ( hasMatch ) {
-                    return d->views.value(urlRegex);
-                }
+        QRegularExpression regex(urlRegex);
+        QRegularExpressionMatch match = regex.match(urlPath);
+        bool hasMatch = match.hasMatch(); // true
+        if ( hasMatch ) {
+            return pair.second;
         }
+    }
 
     throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
 }

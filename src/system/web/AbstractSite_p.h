@@ -39,7 +39,7 @@ namespace Web
 class AbstractSitePrivate
 {
     public:
-        QHash<QString, View::ViewInterface *> views;
+        QList< QPair<QString, View::ViewInterface *> > views;
         Grantlee::Engine * engine = Q_NULLPTR;
 };
 
