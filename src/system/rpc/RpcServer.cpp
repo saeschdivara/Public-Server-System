@@ -31,10 +31,12 @@ Server::~Server()
     delete d_ptr;
 }
 
-void Server::addCommand(const QString &requestRegex, std::function<QString()> fnc)
+void Server::addCommand(const QString &requestRegex, RpcCommandFunction fnc)
 {
     Q_D(Server);
-    d->commands.append(qMakePair< QString, std::function<QString()> >(requestRegex, fnc));
+    QPair< QString, RpcCommandFunction > foo;
+    foo.first = requestRegex;
+    d->commands.append(foo);
 }
 
 void Server::listen(const QHostAddress &address, quint16 port)
@@ -64,7 +66,10 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
     QString hostname = url.hostname();
     QString urlPath = url.path();
 
-    for( QPair< QString, std::function<QString()> > pair : d->commands ) {
+    //for( QPair< QString, RpcCommandFunction > pair : d->commands ) {
+    for (int var = 0; var < d->commands.length(); ++var) {
+        QPair< QString, RpcCommandFunction > pair;
+
         QString regexString = pair.first;
         QRegularExpression re(regexString);
         QRegularExpressionMatch match = re.match(urlPath);
@@ -73,6 +78,9 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
         if (hasMatch) {
             auto commandFunction = pair.second;
 
+            QByteArray postData = request->body();
+            QByteArray method = request->method();
+
             QBuffer buffer;
             buffer.open(QIODevice::ReadWrite);
 
@@ -80,7 +88,7 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
 
             stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-            stream << commandFunction();
+            stream << commandFunction(postData);
 
             buffer.close();
 
@@ -88,12 +96,13 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
 
             response->writeHead(Tufao::HttpServerResponse::OK);
             response->end(renderedView);
-        }
-        else {
-            response->writeHead(Tufao::HttpServerResponse::NOT_FOUND);
-            response->end("Not found");
+
+            return;
         }
     }
+
+    response->writeHead(Tufao::HttpServerResponse::NOT_FOUND);
+    response->end("Not found");
 }
 
 }

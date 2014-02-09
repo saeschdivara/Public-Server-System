@@ -1,6 +1,8 @@
 #ifndef SERVER_P_H
 #define SERVER_P_H
 
+#include "public_server_system_globals.h"
+
 // std
 #include <functional>
 

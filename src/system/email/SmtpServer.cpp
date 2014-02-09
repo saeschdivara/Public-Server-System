@@ -5,6 +5,7 @@
 #include <smtpclient.h>
 
 // Qt
+#include <QtCore/QJsonDocument>
 #include <QtCore/QQueue>
 #include <QtCore/QRunnable>
 #include <QtCore/QThreadPool>
@@ -63,11 +64,18 @@ void SmtpServer::listen(const QHostAddress &address, quint16 port)
 {
     Rpc::Server::listen(address, port);
 
-    addCommand("^/email/send/", std::bind(&SmtpServer::sendEmailRpc, this));
+    addCommand("^/email/send/", Rpc::make_delegate(this, &SmtpServer::sendEmailRpc));
 }
 
-QString SmtpServer::sendEmailRpc()
+QString SmtpServer::sendEmailRpc(QByteArray postData)
 {
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(postData, &error);
+
+    if (error.error == QJsonParseError::NoError) {
+        //
+    }
+
     return QString();
 }
 

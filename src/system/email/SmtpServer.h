@@ -19,7 +19,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT SmtpServer : public Rpc::Server
 
         virtual void listen(const QHostAddress &address, quint16 port);
 
-        QString sendEmailRpc();
+        QString sendEmailRpc(QByteArray postData);
 
     private:
         Q_DECLARE_PRIVATE(SmtpServer)

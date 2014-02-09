@@ -6,7 +6,7 @@ TEMPLATE = lib
 
 DEFINES += PUBLIC_SERVER_SYSTEM_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++1y -stdlib=libc++
 CONFIG += c++11
 
 CONFIG(release, debug|release): {
