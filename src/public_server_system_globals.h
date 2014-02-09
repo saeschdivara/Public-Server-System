@@ -33,6 +33,6 @@
 #  define PUBLICSERVERSYSTEMSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-typedef std::function<QString(QByteArray)> RpcCommandFunction;
+typedef std::function<QString(QByteArray,QByteArray)> RpcCommandFunction;
 
 #endif // PUBLIC_SERVER_SYSTEM_GLOBALS_H

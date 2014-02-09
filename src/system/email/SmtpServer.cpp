@@ -67,7 +67,7 @@ void SmtpServer::listen(const QHostAddress &address, quint16 port)
     addCommand("^/email/send/", Rpc::make_delegate(this, &SmtpServer::sendEmailRpc));
 }
 
-QString SmtpServer::sendEmailRpc(QByteArray postData)
+QString SmtpServer::sendEmailRpc(QByteArray method, QByteArray postData)
 {
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(postData, &error);

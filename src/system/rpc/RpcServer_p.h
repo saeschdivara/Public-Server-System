@@ -18,7 +18,7 @@ class ServerPrivate
 {
     public:
         Tufao::HttpServer * server;
-        QList< QPair< QString, std::function<QString()> > > commands;
+        QList< QPair< QString, RpcCommandFunction > > commands;
 };
 
 }

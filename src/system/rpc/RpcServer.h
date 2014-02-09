@@ -30,7 +30,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
 
         virtual void listen(const QHostAddress & address = QHostAddress::Any, quint16 port = 7210);
 
-        void addCommand(const QString &requestRegex, RpcCommandFunction fnc);
+        void addCommand(QString requestRegex, RpcCommandFunction fnc);
 
     protected:
         Server(ServerPrivate * ptr, QObject *parent = 0);

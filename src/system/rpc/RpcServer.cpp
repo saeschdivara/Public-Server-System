@@ -31,12 +31,10 @@ Server::~Server()
     delete d_ptr;
 }
 
-void Server::addCommand(const QString &requestRegex, RpcCommandFunction fnc)
+void Server::addCommand( QString requestRegex, RpcCommandFunction fnc)
 {
     Q_D(Server);
-    QPair< QString, RpcCommandFunction > foo;
-    foo.first = requestRegex;
-    d->commands.append(foo);
+    d->commands.append(qMakePair< QString, RpcCommandFunction >(requestRegex, fnc));
 }
 
 void Server::listen(const QHostAddress &address, quint16 port)
@@ -66,11 +64,9 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
     QString hostname = url.hostname();
     QString urlPath = url.path();
 
-    //for( QPair< QString, RpcCommandFunction > pair : d->commands ) {
-    for (int var = 0; var < d->commands.length(); ++var) {
-        QPair< QString, RpcCommandFunction > pair;
-
+    for( QPair< QString, RpcCommandFunction > pair : d->commands ) {
         QString regexString = pair.first;
+
         QRegularExpression re(regexString);
         QRegularExpressionMatch match = re.match(urlPath);
         bool hasMatch = match.hasMatch();
@@ -88,7 +84,7 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
 
             stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-            stream << commandFunction(postData);
+            stream << commandFunction(method, postData);
 
             buffer.close();
 
