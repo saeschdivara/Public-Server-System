@@ -10,6 +10,7 @@
 
 // Qt
 #include <QtCore/QBuffer>
+#include <QtCore/QDebug>
 #include <QtCore/QRegularExpression>
 #include <QtCore/QTextCodec>
 

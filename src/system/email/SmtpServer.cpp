@@ -69,11 +69,33 @@ void SmtpServer::listen(const QHostAddress &address, quint16 port)
 
 QString SmtpServer::sendEmailRpc(QByteArray method, QByteArray postData)
 {
+    postData = "";
+    postData += "{";
+    postData +=     "\"\"";
+    postData += "";
+    postData += "}";
+
+    qDebug() << "ddd";
+
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(postData, &error);
 
-    if (error.error == QJsonParseError::NoError) {
-        //
+    if (error.error == QJsonParseError::NoError || true) {
+        SmtpClient client("mx.netzone.ch");
+        MimeMessage email;
+
+        MimePart content;
+        content.setContent("HAAAALLLOOO");
+
+        EmailAddress address("sascha.haeusler@netzbarkeit.ch", "Sascha Hauesler");
+        email.addTo(&address);
+        email.setSubject("Hallo");
+        email.setContent(&content);
+
+        client.connectToHost();
+        if ( ! client.sendMail(email) ) {
+            qDebug() << client.getResponseCode() << client.getResponseText();
+        }
     }
 
     return QString();
