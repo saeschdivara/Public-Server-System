@@ -95,6 +95,7 @@ QString ModelForm<T>::toString() const
         output += "</div>";
     }
 
+    output += "<input type=\"submit\" />";
     output += "</form>";
 
     return output;
