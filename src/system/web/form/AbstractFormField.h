@@ -45,16 +45,18 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
 {
         Q_OBJECT
     public:
-        explicit AbstractFormField(QObject *parent = 0);
+        explicit AbstractFormField(const QString & description, QObject *parent = 0);
         virtual ~AbstractFormField();
 
         QVariant value() const;
         void setValue(QVariant val);
 
+        QString description() const;
+
         Widget::WidgetInterface * widget() const;
 
     protected:
-        AbstractFormField(AbstractFormFieldPrivate * ptr, QObject * parent = 0);
+        AbstractFormField(AbstractFormFieldPrivate * ptr, const QString & description, QObject * parent = 0);
         AbstractFormFieldPrivate * d_ptr;
 
     private:

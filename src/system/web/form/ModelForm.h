@@ -86,9 +86,13 @@ QString ModelForm<T>::toString() const
     QString output;
     QList<AbstractFormField *> fields = getAllFields();
 
+    output += "<form method=\"POST\">";
+
     for ( AbstractFormField * field : fields ) {
             output += field->widget()->toString();
         }
+
+    output += "</form>";
 
     return output;
 }
