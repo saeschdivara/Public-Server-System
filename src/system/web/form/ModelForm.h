@@ -91,7 +91,7 @@ QString ModelForm<T>::toString() const
     for ( AbstractFormField * field : fields ) {
         output += "<div class=\"widget\">";
         output += "<label>" + field->description() + "</label>";
-        output += field->widget()->toString();
+        output += field->widget()->toString(field->value());
         output += "</div>";
     }
 
