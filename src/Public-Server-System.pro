@@ -62,7 +62,8 @@ HEADERS += \
     system/email/Mail.h \
     system/rpc/RpcServer.h \
     system/rpc/RpcServer_p.h \
-    system/rpc/RpcClient.h
+    system/rpc/RpcClient.h \
+    system/rpc/RpcClient_p.h
 
 SOURCES += \
     system/core/System.cpp \

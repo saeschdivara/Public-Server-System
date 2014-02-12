@@ -18,10 +18,14 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT RpcClient : public QObject
         virtual ~RpcClient();
 
     protected:
+        RpcClient(RpcClientPrivate * ptr, QObject *parent);
         RpcClientPrivate * d_ptr;
 
     private:
         Q_DECLARE_PRIVATE(RpcClient)
 };
+
+}
+}
 
 #endif // RPCCLIENT_H
