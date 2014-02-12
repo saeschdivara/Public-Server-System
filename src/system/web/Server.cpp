@@ -68,7 +68,7 @@ class ServerPrivate
             Grantlee::Context context;
 
             // Server
-            context.insert("STATICS_PATH", staticFilesPath + QLatin1Char('/'));
+            context.insert("STATICS_PATH",  QLatin1Char('/') + staticFilesPath + QLatin1Char('/'));
 
             // Session
             //
