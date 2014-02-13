@@ -50,6 +50,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
         AbstractModel(const AbstractModel & mo);
         virtual ~AbstractModel();
 
+        void save();
+
     protected:
         AbstractModel(arangodb::Document * doc, AbstractModelPrivate * ptr, QObject *parent = 0);
         AbstractModel(AbstractModelPrivate * ptr, QObject *parent = 0);

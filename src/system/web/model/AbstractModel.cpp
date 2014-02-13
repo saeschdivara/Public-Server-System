@@ -54,6 +54,13 @@ AbstractModel::~AbstractModel()
     delete d_ptr;
 }
 
+void AbstractModel::save()
+{
+    Q_D(AbstractModel);
+
+    d->doc->save();
+}
+
 AbstractModel::AbstractModel(arangodb::Document *doc, AbstractModelPrivate *ptr, QObject *parent) :
     AbstractModel(ptr, parent)
 {
