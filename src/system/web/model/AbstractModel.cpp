@@ -50,6 +50,7 @@ AbstractModel::AbstractModel(const AbstractModel &mo) :
 
 AbstractModel::~AbstractModel()
 {
+    delete d_ptr->doc;
     delete d_ptr;
 }
 
