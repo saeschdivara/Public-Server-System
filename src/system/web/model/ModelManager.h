@@ -72,7 +72,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
 #define PU_DEFINE_MANAGER(Class) \
     Q_GLOBAL_STATIC(PublicServerSystem::Web::Model::ModelManager<Class>, g##Class) \
     \
-    PublicServerSystem::Web::Model::ModelManager<Class> * ClothingTimeModel::objects = g##Class();
+    PublicServerSystem::Web::Model::ModelManager<Class> * Class::objects = g##Class();
 
 
 template <class T>
