@@ -54,6 +54,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         ModelList all();
         T * get(const QString & id);
 
+        T * create();
+
         static arangodb::ArangoDBDriver * getArangoDriver();
 
     protected:
@@ -124,6 +126,15 @@ T * ModelManager<T>::get(const QString &id)
     arangodb::Document * modelDoc = getArangoDriver()->getDocument(realID);
     modelDoc->sync();
     modelDoc->waitForResult();
+    T * model = new T(modelDoc, 0);
+
+    return model;
+}
+
+template <class T>
+T *ModelManager<T>::create()
+{
+    arangodb::Document * modelDoc = getArangoDriver()->createDocument(T::staticMetaObject.className());
     T * model = new T(modelDoc, 0);
 
     return model;

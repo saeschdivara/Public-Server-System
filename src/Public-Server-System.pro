@@ -14,12 +14,16 @@ CONFIG(release, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/release/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/release/ -ltemplate_library
     LIBS += -L$$PWD/../dist/3rdparty/smpt-client-qt/release/ -lSMTPEmail
+
+    DEFINES += PUBLIC_SERVER_SYSTEM_DEBUG
 }
 else:CONFIG(debug, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/tufao/debug/ -ltufao
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/debug/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
     LIBS += -L$$PWD/../dist/3rdparty/smpt-client-qt/debug/ -lSMTPEmail
+
+    DEFINES += PUBLIC_SERVER_SYSTEM_RELEASE
 }
 
 INCLUDEPATH += $$PWD/../3rdparty/tufao/src/
@@ -79,6 +83,7 @@ SOURCES += \
     system/email/SmtpServer.cpp \
     system/email/Mail.cpp \
     system/rpc/RpcServer.cpp \
-    system/rpc/RpcClient.cpp
+    system/rpc/RpcClient.cpp \
+    system/web/view/ViewInterface.cpp
 
 OTHER_FILES += \
