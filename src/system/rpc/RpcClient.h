@@ -17,6 +17,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT RpcClient : public QObject
         explicit RpcClient(QObject *parent = 0);
         virtual ~RpcClient();
 
+        void setHost(const QString & name);
+
     protected:
         RpcClient(RpcClientPrivate * ptr, QObject *parent);
         RpcClientPrivate * d_ptr;
