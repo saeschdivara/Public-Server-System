@@ -101,7 +101,7 @@ template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::all()
 {
     auto driver = getArangoDriver();
-    auto select = builder()->createSelect(T::staticMetaObject.className(), 6);
+    auto select = builder()->createSelect(T::staticMetaObject.className(), 1000);
 
     auto cursor = driver->executeSelect(select);
     cursor->waitForResult();
