@@ -61,6 +61,17 @@ void AbstractModel::save()
     d->doc->save();
 }
 
+void AbstractModel::saveAndDelete()
+{
+    Q_D(AbstractModel);
+
+    QObject::connect( d->doc, &arangodb::Document::destroyed,
+                      this, &AbstractModel::deleteLater
+                      );
+
+    d->doc->deleteAfterFinished();
+}
+
 AbstractModel::AbstractModel(arangodb::Document *doc, AbstractModelPrivate *ptr, QObject *parent) :
     AbstractModel(ptr, parent)
 {
