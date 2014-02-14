@@ -42,6 +42,7 @@ class AbstractModelPrivate
     public:
         arangodb::Document * doc;
         QHash<QString, PublicServerSystem::Web::Form::AbstractFormField *> fields;
+        bool hasDocumentDestroyed = false;
 };
 
 }

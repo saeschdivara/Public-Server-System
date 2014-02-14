@@ -50,7 +50,7 @@ AbstractModel::AbstractModel(const AbstractModel &mo) :
 
 AbstractModel::~AbstractModel()
 {
-    delete d_ptr->doc;
+    if (! d_ptr->hasDocumentDestroyed) delete d_ptr->doc;
     delete d_ptr;
 }
 
@@ -64,6 +64,8 @@ void AbstractModel::save()
 void AbstractModel::saveAndDelete()
 {
     Q_D(AbstractModel);
+
+    d->hasDocumentDestroyed = true;
 
     QObject::connect( d->doc, &arangodb::Document::destroyed,
                       this, &AbstractModel::deleteLater
