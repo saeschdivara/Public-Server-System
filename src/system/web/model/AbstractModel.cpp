@@ -69,6 +69,7 @@ void AbstractModel::saveAndDelete()
                       this, &AbstractModel::deleteLater
                       );
 
+    d->doc->save();
     d->doc->deleteAfterFinished();
 }
 
