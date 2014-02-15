@@ -102,7 +102,7 @@ void AbstractModel::set(const QString &name, QVariant val)
     d->doc->set(name, val);
 }
 
-Form::AbstractFormField *AbstractModel::field(const QString &referencingPropertyName, const QMetaObject &fieldClassObj)
+Form::AbstractFormField *AbstractModel::field(const QString &referencingPropertyName, const QMetaObject &fieldClassObj, const QString &description)
 {
     Q_D(AbstractModel);
 
@@ -113,7 +113,10 @@ Form::AbstractFormField *AbstractModel::field(const QString &referencingProperty
             thisField = d->fields.value(referencingPropertyName);
         }
     else {
-        thisField = qobject_cast<Form::AbstractFormField *>(fieldClassObj.newInstance(Q_ARG(QObject *, 0)));
+        thisField = qobject_cast<Form::AbstractFormField *>(fieldClassObj.newInstance(
+                                                                Q_ARG(QString, description),
+                                                                Q_ARG(QObject *, 0)
+                                                            ));
         d->fields.insert(referencingPropertyName, thisField);
     }
 

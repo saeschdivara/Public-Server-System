@@ -26,6 +26,9 @@
 
 #include "WidgetInterface.h"
 
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -38,8 +41,8 @@ namespace Widget
 class PUBLICSERVERSYSTEMSHARED_EXPORT TextInput : public WidgetInterface
 {
     public:
-        virtual QString toString() const {
-            return QStringLiteral("<input type=\"text\" />");
+        virtual QString toString(const QVariant & value) const {
+            return QString("<input type=\"text\" value=\"%1\" />").arg(value.toString());
         }
 };
 

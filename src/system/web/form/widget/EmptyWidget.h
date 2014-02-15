@@ -38,7 +38,8 @@ namespace Widget
 class PUBLICSERVERSYSTEMSHARED_EXPORT EmptyWidget : public WidgetInterface
 {
     public:
-        virtual QString toString() const {
+        virtual QString toString(const QVariant & value) const {
+            Q_UNUSED(value)
             return QStringLiteral("");
         }
 };

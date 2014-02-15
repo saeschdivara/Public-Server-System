@@ -61,7 +61,12 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
         QVariant get(const QString & name) const;
         void set(const QString & name, QVariant val);
 
-        Form::AbstractFormField * field(const QString & referencingPropertyName, const QMetaObject &fieldClassObj);
+        Form::AbstractFormField * field(const QString & referencingPropertyName, const QMetaObject &fieldClassObj, const QString & description);
+
+        template<typename T>
+        Form::AbstractFormField * field(const QString & referencingPropertyName, const QString & description) {
+            return field(referencingPropertyName, T::staticMetaObject, description);
+        }
 
     private:
         Q_DECLARE_PRIVATE(AbstractModel)

@@ -69,13 +69,13 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
     QList<AbstractFormField *> fields;
 
     for (int i = start; i < count; ++i) {
-            QMetaProperty prop = metaObj.property(i);
-            QVariant propValue = prop.read(m_model);
-            if (propValue.canConvert(fieldMetaID)) {
-                    AbstractFormField * field = propValue.value<AbstractFormField *>();
-                    fields.append(field);
-                }
+        QMetaProperty prop = metaObj.property(i);
+        QVariant propValue = prop.read(m_model);
+        if (propValue.canConvert(fieldMetaID)) {
+            AbstractFormField * field = propValue.value<AbstractFormField *>();
+            fields.append(field);
         }
+    }
 
     return fields;
 }
@@ -86,9 +86,17 @@ QString ModelForm<T>::toString() const
     QString output;
     QList<AbstractFormField *> fields = getAllFields();
 
+    output += "<form method=\"POST\">";
+
     for ( AbstractFormField * field : fields ) {
-            output += field->widget()->toString();
-        }
+        output += "<div class=\"widget\">";
+        output += "<label>" + field->description() + "</label>";
+        output += field->widget()->toString(field->value());
+        output += "</div>";
+    }
+
+    output += "<input type=\"submit\" />";
+    output += "</form>";
 
     return output;
 }
