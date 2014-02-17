@@ -53,6 +53,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
 
         ModelList all();
         T * get(const QString & id);
+        ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
+        ModelList getByExample(QVariantMap example);
 
         T * create();
 
@@ -129,6 +131,35 @@ T * ModelManager<T>::get(const QString &id)
     T * model = new T(modelDoc, 0);
 
     return model;
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString &exampleKey, QVariant exampleValue)
+{
+    QJsonObject obj;
+    obj.insert(exampleKey, exampleValue);
+
+    auto select = builder()->createByExampleSelect(T::staticMetaObject.className(), obj);
+
+    auto driver = getArangoDriver();
+    auto cursor = driver->executeSelect(select);
+    cursor->waitForResult();
+
+    ModelManager::ModelList resultList;
+    auto dataList = cursor->data();
+    for ( arangodb::Document * dataDoc : dataList ) {
+            dataDoc->sync();
+            dataDoc->waitForResult();
+            resultList << new T(dataDoc, 0);
+        }
+
+    return resultList;
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::getByExample(QVariantMap example)
+{
+    //
 }
 
 template <class T>
