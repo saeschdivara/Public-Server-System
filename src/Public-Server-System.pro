@@ -67,7 +67,8 @@ HEADERS += \
     system/rpc/RpcServer.h \
     system/rpc/RpcServer_p.h \
     system/rpc/RpcClient.h \
-    system/rpc/RpcClient_p.h
+    system/rpc/RpcClient_p.h \
+    system/web/UserSession.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -84,6 +85,7 @@ SOURCES += \
     system/email/Mail.cpp \
     system/rpc/RpcServer.cpp \
     system/rpc/RpcClient.cpp \
-    system/web/view/ViewInterface.cpp
+    system/web/view/ViewInterface.cpp \
+    system/web/UserSession.cpp
 
 OTHER_FILES += \

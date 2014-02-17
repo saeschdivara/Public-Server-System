@@ -25,6 +25,7 @@
 #define VIEWINTERFACE_H
 
 #include "public_server_system_globals.h"
+#include "system/web/UserSession.h"
 
 // Grantlee
 #include <lib/engine.h>
@@ -43,10 +44,16 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
     public:
         virtual ~ViewInterface() {}
 
-        virtual void render(QTextStream & stream, Grantlee::Engine * templateEngine, Grantlee::Context * requestContext) = 0;
+        virtual void render(QTextStream & stream,
+                            Grantlee::Engine * templateEngine,
+                            Grantlee::Context * requestContext,
+                            UserSession * session) = 0;
 };
 
-void render(const QString & templateName, QTextStream & stream, Grantlee::Engine * templateEngine, Grantlee::Context * requestContext);
+void render(const QString & templateName,
+            QTextStream & stream,
+            Grantlee::Engine * templateEngine,
+            Grantlee::Context * requestContext);
 
 }
 }

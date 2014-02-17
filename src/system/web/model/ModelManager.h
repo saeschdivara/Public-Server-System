@@ -137,7 +137,7 @@ template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString &exampleKey, QVariant exampleValue)
 {
     QJsonObject obj;
-    obj.insert(exampleKey, exampleValue);
+    obj.insert(exampleKey, QJsonValue::fromVariant(exampleValue));
 
     auto select = builder()->createByExampleSelect(T::staticMetaObject.className(), obj);
 

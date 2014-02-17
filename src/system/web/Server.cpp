@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "Server.h"
+#include "UserSession.h"
 
 #include "system/core/Exception.h"
 
@@ -74,6 +75,10 @@ class ServerPrivate
             //
 
             return context;
+        }
+
+        UserSession * getSession(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response) {
+            return new UserSession;
         }
 };
 
@@ -184,6 +189,8 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
         else {
                 View::ViewInterface * view = site->view(urlPath);
 
+                UserSession * session = d->getSession(request, response);
+
                 QBuffer buffer;
                 buffer.open(QIODevice::ReadWrite);
 
@@ -192,7 +199,7 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
                 stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
                 Grantlee::Context context = d->getSessionContext(request, response);
-                view->render(stream, site->templateEngine(), &context);
+                view->render(stream, site->templateEngine(), &context, session);
 
                 buffer.close();
 
