@@ -78,7 +78,7 @@ class ServerPrivate
         }
 
         UserSession * getSession(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response) {
-            return new UserSession;
+            return new UserSession(request, response);
         }
 };
 
