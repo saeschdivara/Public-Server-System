@@ -53,6 +53,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
         void save();
         void saveAndDelete();
 
+        QString dbCollectionKey() const;
+
     protected:
         AbstractModel(arangodb::Document * doc, AbstractModelPrivate * ptr, QObject *parent = 0);
         AbstractModel(AbstractModelPrivate * ptr, QObject *parent = 0);

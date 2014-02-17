@@ -59,6 +59,7 @@ void AbstractModel::save()
     Q_D(AbstractModel);
 
     d->doc->save();
+    d->doc->waitForResult();
 }
 
 void AbstractModel::saveAndDelete()
@@ -73,6 +74,12 @@ void AbstractModel::saveAndDelete()
 
     d->doc->save();
     d->doc->deleteAfterFinished();
+}
+
+QString AbstractModel::dbCollectionKey() const
+{
+    Q_D(const AbstractModel);
+    return d->doc->key();
 }
 
 AbstractModel::AbstractModel(arangodb::Document *doc, AbstractModelPrivate *ptr, QObject *parent) :
