@@ -52,6 +52,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         typedef QList<T *> ModelList;
 
         ModelList all();
+        ModelList getPart(int start, int limit);
         T * get(const QString & id);
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
@@ -120,6 +121,29 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
 }
 
 template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limit)
+{
+    auto driver = getArangoDriver();
+    auto select = builder()->createGetAllSelect(T::staticMetaObject.className());
+
+    select->setSkipNumber(start);
+    select->setLimit(limit);
+
+    auto cursor = driver->executeSelect(select);
+    cursor->waitForResult();
+
+    ModelManager::ModelList resultList;
+    auto dataList = cursor->data();
+    for ( arangodb::Document * dataDoc : dataList ) {
+            dataDoc->sync();
+            dataDoc->waitForResult();
+            resultList << new T(dataDoc, 0);
+        }
+
+    return resultList;
+}
+
+template <class T>
 T * ModelManager<T>::get(const QString &id)
 {
     QString realID(T::staticMetaObject.className());
@@ -159,7 +183,7 @@ typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString 
 template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::getByExample(QVariantMap example)
 {
-    //
+    Q_UNUSED(example)
 }
 
 template <class T>
