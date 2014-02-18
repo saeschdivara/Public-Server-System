@@ -60,6 +60,9 @@ class ServerPrivate
         // Static files
         QString diskStaticFilesPath;
         QString staticFilesPath;
+        // Media files
+        QString diskMediaFilesPath;
+        QString mediaFilesPath;
         // Secure data
         QSslKey privateKey;
         QSslCertificate certificate;
@@ -128,6 +131,13 @@ void Server::setStaticFilesDir(const QString &dir, const QString &websitePath)
     d->staticFilesPath = websitePath;
 }
 
+void Server::setMediaDir(const QString &dir, const QString &websitePath)
+{
+    Q_D(Server);
+    d->diskMediaFilesPath = dir;
+    d->mediaFilesPath = websitePath;
+}
+
 bool Server::listenOnSecureConnections(const QHostAddress &address, quint16 port)
 {
     Q_D(Server);
@@ -182,7 +192,12 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
         if (urlPath.startsWith(QLatin1Char('/') + d->staticFilesPath + QLatin1Char('/'))) {
-                if (!serveStaticFile(request, response)) {
+                if (!serveStaticFile(request, response, d->diskStaticFilesPath)) {
+                        Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The file doesn't exists"));
+                    }
+            }
+        else if (urlPath.startsWith(QLatin1Char('/') + d->mediaFilesPath + QLatin1Char('/'))) {
+                if (!serveStaticFile(request, response, d->diskMediaFilesPath)) {
                         Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The file doesn't exists"));
                     }
             }
@@ -220,16 +235,20 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
 }
 
-bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
+bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response, const QString & path)
 {
-    Q_D(Server);
     QString resource(QByteArray::fromPercentEncoding(Tufao::Url(request->url())
                                                      .path().toUtf8()));
 
-    resource.replace(d->staticFilesPath + QLatin1Char('/'), "");
-    QString fileName(QDir::cleanPath(d->diskStaticFilesPath
+    qDebug() << resource;
+    resource.replace(path + QLatin1Char('/'), "");
+    qDebug() << resource;
+    QString fileName(QDir::cleanPath(path
                                      + QDir::toNativeSeparators(resource)));
-    if (!fileName.startsWith(d->diskStaticFilesPath + QDir::separator()))
+
+    fileName.replace("media/", "");
+    qDebug() << fileName;
+    if (!fileName.startsWith(path + QDir::separator()))
         return false;
 
     {

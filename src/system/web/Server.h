@@ -56,6 +56,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
                                        quint16 port = 80);
 
         void setStaticFilesDir(const QString & dir, const QString & websitePath);
+        void setMediaDir(const QString & dir, const QString & websitePath);
 
         // Secure listening
         bool listenOnSecureConnections(const QHostAddress &address = QHostAddress::Any,
@@ -72,7 +73,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
                                    Tufao::HttpServerResponse *response);
 
         bool serveStaticFile(Tufao::HttpServerRequest *request,
-                              Tufao::HttpServerResponse *response);
+                              Tufao::HttpServerResponse *response, const QString &path);
 
     private:
         Q_DECLARE_PRIVATE(Server)
