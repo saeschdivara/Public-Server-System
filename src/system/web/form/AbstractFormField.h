@@ -48,6 +48,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
         explicit AbstractFormField(const QString & description, QObject *parent = 0);
         virtual ~AbstractFormField();
 
+        bool isValid() const;
+
         QVariant value() const;
         void setValue(QVariant val);
 
@@ -58,6 +60,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
     protected:
         AbstractFormField(AbstractFormFieldPrivate * ptr, const QString & description, QObject * parent = 0);
         AbstractFormFieldPrivate * d_ptr;
+
+        virtual bool validate() const;
 
     private:
         Q_DECLARE_PRIVATE(AbstractFormField)

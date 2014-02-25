@@ -46,6 +46,11 @@ AbstractFormField::~AbstractFormField()
     delete d_ptr;
 }
 
+bool AbstractFormField::isValid() const
+{
+    return this->validate();
+}
+
 QVariant AbstractFormField::value() const
 {
     Q_D(const AbstractFormField);
@@ -77,6 +82,11 @@ AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, const QStrin
     d_ptr(ptr)
 {
     ptr->description = description;
+}
+
+bool AbstractFormField::validate() const
+{
+    return true;
 }
 
 }
