@@ -68,7 +68,8 @@ HEADERS += \
     system/rpc/RpcServer_p.h \
     system/rpc/RpcClient.h \
     system/rpc/RpcClient_p.h \
-    system/web/UserSession.h
+    system/web/UserSession.h \
+    system/web/view/Paginator.h
 
 SOURCES += \
     system/core/System.cpp \
