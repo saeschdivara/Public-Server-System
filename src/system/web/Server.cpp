@@ -75,6 +75,9 @@ class ServerPrivate
             context.insert("STATIC_URL",  QLatin1Char('/') + staticFilesPath + QLatin1Char('/'));
             context.insert("MEDIA_URL",  QLatin1Char('/') + mediaFilesPath + QLatin1Char('/'));
 
+            Tufao::Url url(Tufao::Url::url(request));
+            context.insert("REQUEST_URL", url.path());
+
             // Session
             //
 
@@ -184,9 +187,6 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
     QString hostname = url.hostname();
     QString urlPath = url.path();
 
-    qDebug() << hostname << urlPath;
-    qDebug() << headers;
-
     AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
     try {
@@ -241,14 +241,11 @@ bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServe
     QString resource(QByteArray::fromPercentEncoding(Tufao::Url(request->url())
                                                      .path().toUtf8()));
 
-    qDebug() << resource;
     resource.replace(path + QLatin1Char('/'), "");
-    qDebug() << resource;
     QString fileName(QDir::cleanPath(path
                                      + QDir::toNativeSeparators(resource)));
 
     fileName.replace("media/", "");
-    qDebug() << fileName;
     if (!fileName.startsWith(path + QDir::separator()))
         return false;
 
