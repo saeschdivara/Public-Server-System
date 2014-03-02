@@ -41,20 +41,26 @@ template <class T>
 class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 {
     public:
-        ModelForm(T * model);
+        ModelForm(T * model, QHash<QString, QString> * post);
 
         QList<AbstractFormField *> getAllFields() const;
+
+        bool isValid() const;
 
         QString toString() const;
 
     protected:
         T * m_model;
+        QHash<QString, QString> * m_post;
+        QList<AbstractFormField *> m_fields;
 };
 
 template <class T>
-ModelForm<T>::ModelForm(T *model) :
-    m_model(model)
+ModelForm<T>::ModelForm(T *model, QHash<QString, QString> *post) :
+    m_model(model),
+    m_post(post)
 {
+    m_fields = getAllFields();
 }
 
 template <class T>
@@ -73,22 +79,36 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
         QVariant propValue = prop.read(m_model);
         if (propValue.canConvert(fieldMetaID)) {
             AbstractFormField * field = propValue.value<AbstractFormField *>();
+
+            // Only if the field is in the post
+            if (m_post->contains(prop.name())) {
+                field->setValue(propValue);
+            }
+
             fields.append(field);
         }
     }
 
     return fields;
 }
+template <class T>
+bool ModelForm<T>::isValid() const
+{
+    for ( AbstractFormField * field : m_fields ) {
+        if ( !field->isValid() ) return false;
+    }
+
+    return true;
+}
 
 template <class T>
 QString ModelForm<T>::toString() const
 {
     QString output;
-    QList<AbstractFormField *> fields = getAllFields();
 
-    output += "<form method=\"POST\">";
+    output += "<form method=\"POST\" action=\".\">";
 
-    for ( AbstractFormField * field : fields ) {
+    for ( AbstractFormField * field : m_fields ) {
         output += "<div class=\"widget\">";
         output += "<label>" + field->description() + "</label>";
         output += field->toString();
