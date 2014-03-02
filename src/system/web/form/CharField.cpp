@@ -38,8 +38,8 @@ class CharFieldPrivate : public AbstractFormFieldPrivate
     public:
 };
 
-CharField::CharField(const QString & description, QObject *parent) :
-    AbstractFormField(new CharFieldPrivate, description, parent)
+CharField::CharField(const QString & name, const QString & description, QObject *parent) :
+    AbstractFormField(new CharFieldPrivate, name, description, parent)
 {
     Q_D(CharField);
 

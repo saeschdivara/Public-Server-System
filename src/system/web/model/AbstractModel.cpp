@@ -121,6 +121,7 @@ Form::AbstractFormField *AbstractModel::field(const QString &referencingProperty
         }
     else {
         thisField = qobject_cast<Form::AbstractFormField *>(fieldClassObj.newInstance(
+                                                                Q_ARG(QString, referencingPropertyName),
                                                                 Q_ARG(QString, description),
                                                                 Q_ARG(QObject *, 0)
                                                             ));

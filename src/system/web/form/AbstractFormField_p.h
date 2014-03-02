@@ -16,6 +16,7 @@ class AbstractFormFieldPrivate
 {
     public:
         QVariant fieldValue;
+        QString fieldName;
         QString description;
 
         Widget::WidgetInterface * widget;

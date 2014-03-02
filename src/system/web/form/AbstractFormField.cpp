@@ -36,8 +36,8 @@ int getAbstractFormFieldMetaID()
     return qRegisterMetaType<AbstractFormField *>("AbstractFormFieldMetaIDPtr");
 }
 
-AbstractFormField::AbstractFormField(const QString &description, QObject *parent) :
-    AbstractFormField(new AbstractFormFieldPrivate, description, parent)
+AbstractFormField::AbstractFormField(const QString &name, const QString &description, QObject *parent) :
+    AbstractFormField(new AbstractFormFieldPrivate, name, description, parent)
 {
 }
 
@@ -77,10 +77,11 @@ Widget::WidgetInterface *AbstractFormField::widget() const
     return d->widget;
 }
 
-AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, const QString & description, QObject *parent) :
+AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, const QString & name, const QString & description, QObject *parent) :
     QObject(parent),
     d_ptr(ptr)
 {
+    ptr->fieldName = name;
     ptr->description = description;
 }
 
