@@ -53,6 +53,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
         QVariant value() const;
         void setValue(QVariant val);
 
+        QString name() const;
+
         QString description() const;
 
         Widget::WidgetInterface * widget() const;

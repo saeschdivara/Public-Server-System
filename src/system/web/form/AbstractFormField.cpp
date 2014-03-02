@@ -64,6 +64,12 @@ void AbstractFormField::setValue(QVariant val)
     d->fieldValue = val;
 }
 
+QString AbstractFormField::name() const
+{
+    Q_D(const AbstractFormField);
+    return d->fieldName;
+}
+
 QString AbstractFormField::description() const
 {
     Q_D(const AbstractFormField);
