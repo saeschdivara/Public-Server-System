@@ -41,8 +41,8 @@ namespace Widget
 class PUBLICSERVERSYSTEMSHARED_EXPORT TextInput : public WidgetInterface
 {
     public:
-        virtual QString toString(const QVariant & value) const {
-            return QString("<input type=\"text\" value=\"%1\" />").arg(value.toString());
+        virtual QString toString(const QString & name, const QVariant & value) const {
+            return QString("<input type=\"text\" name=\"m_%1\" value=\"%2\" />").arg(name, value.toString());
         }
 };
 

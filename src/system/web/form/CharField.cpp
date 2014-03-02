@@ -46,6 +46,13 @@ CharField::CharField(const QString & name, const QString & description, QObject 
     d->widget = new Widget::TextInput;
 }
 
+QString CharField::toString() const
+{
+    Q_D(const CharField);
+
+    return d->widget->toString(d->fieldName, d->fieldValue);
+}
+
 }
 }
 }

@@ -42,7 +42,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT WidgetInterface
     public:
         virtual ~WidgetInterface() {}
 
-        virtual QString toString(const QVariant & value) const = 0;
+        virtual QString toString(const QString & name, const QVariant & value) const = 0;
 };
 
 }

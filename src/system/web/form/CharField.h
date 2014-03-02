@@ -41,6 +41,8 @@ class CharField : public AbstractFormField
     public:
         Q_INVOKABLE explicit CharField(const QString & name, const QString & description, QObject *parent = 0);
 
+        virtual QString toString() const;
+
     private:
         Q_DECLARE_PRIVATE(CharField)
 };
