@@ -238,14 +238,18 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
 bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response, const QString & path)
 {
+    Q_D(Server);
+
     QString resource(QByteArray::fromPercentEncoding(Tufao::Url(request->url())
                                                      .path().toUtf8()));
 
-    resource.replace(path + QLatin1Char('/'), "");
     QString fileName(QDir::cleanPath(path
                                      + QDir::toNativeSeparators(resource)));
 
-    fileName.replace("media/", "");
+
+    fileName = fileName.replace("/" + d->staticFilesPath + "/", "/");
+    fileName = fileName.replace("/" + d->mediaFilesPath + "/", "/");
+
     if (!fileName.startsWith(path + QDir::separator()))
         return false;
 
