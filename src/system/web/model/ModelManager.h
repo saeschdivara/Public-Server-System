@@ -133,11 +133,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
     Q_D(ModelManager);
 
     auto driver = getArangoDriver();
-//    auto select = builder()->createGetAllSelect(T::staticMetaObject.className());
-
-//    select->setSkipNumber(start);
-//    select->setLimit(limit);
-
     auto select = builder()->createSelect(T::staticMetaObject.className(), limit);
     select->setLimit(start, limit);
 
@@ -146,8 +141,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
 
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
-
-    qDebug() << cursor->count();
 
     d->count = cursor->count();
 
