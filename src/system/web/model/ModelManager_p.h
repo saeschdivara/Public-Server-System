@@ -37,6 +37,8 @@ class ModelManagerPrivate
 {
     public:
         arangodb::QueryBuilder qb;
+
+        int count;
 };
 
 }

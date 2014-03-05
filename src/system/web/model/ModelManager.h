@@ -33,6 +33,8 @@
 #include <Document.h>
 #include <QueryBuilder.h>
 
+#include <QtCore/QDebug>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -60,6 +62,11 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         T * create();
 
         static arangodb::ArangoDBDriver * getArangoDriver();
+
+        int count() const {
+            Q_D(const ModelManager);
+            return d->count;
+        }
 
     protected:
         ModelManagerPrivate * d_ptr;
@@ -123,17 +130,27 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
 template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limit)
 {
-    auto driver = getArangoDriver();
-    auto select = builder()->createGetAllSelect(T::staticMetaObject.className());
+    Q_D(ModelManager);
 
-    select->setSkipNumber(start);
-    select->setLimit(limit);
+    auto driver = getArangoDriver();
+//    auto select = builder()->createGetAllSelect(T::staticMetaObject.className());
+
+//    select->setSkipNumber(start);
+//    select->setLimit(limit);
+
+    auto select = builder()->createSelect(T::staticMetaObject.className(), limit);
+    select->setLimit(start, limit);
 
     auto cursor = driver->executeSelect(select);
     cursor->waitForResult();
 
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
+
+    qDebug() << cursor->count();
+
+    d->count = cursor->count();
+
     for ( arangodb::Document * dataDoc : dataList ) {
             dataDoc->sync();
             dataDoc->waitForResult();
