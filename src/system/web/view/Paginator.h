@@ -18,11 +18,32 @@ template<typename T>
 class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
 {
     public:
-        inline Paginator(QList<T *> & list, int pageSize, int currentPage) :
-            m_list(list),
+        inline Paginator(int pageSize, int currentPage) :
             m_pageSize(pageSize),
             m_currentPage(currentPage)
-        {}
+        {
+            if (m_pageSize < 1) m_pageSize = 1;
+        }
+
+        QList<T *> getList() {
+            int startingPoint = (m_currentPage - 1) * m_pageSize;
+            m_list = T::objects->getPart(startingPoint, m_pageSize);
+            m_fullCount = T::objects->count();
+            return m_list;
+        }
+
+        QList<T *> list() {
+
+            if ( m_list.size() > 0 )
+                return m_list;
+            else
+                return getList();
+        }
+
+        int pageCount() const {
+            int pagesCount = m_fullCount / m_pageSize;
+            return pagesCount;
+        }
 
         int firstPageNumber() const {
             return 1;
@@ -31,19 +52,25 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
         QList<int> pages() const {
             QList<int> p;
 
-            for ( int i = 1; i < m_list.size(); i++) {
+            for ( int i = 1; i < pageCount(); i++) {
                 p.append(i);
             }
 
             return p;
         }
 
-        int nextPage() {
-            if ( m_currentPage < m_list.size() ) {
-                return m_currentPage+1;
+        int previousPage() const {
+            if ( m_currentPage > 1 ) {
+                return m_currentPage - 1;
             }
 
             return -1;
+        }
+
+        int nextPage() const {
+            if ( m_currentPage < 1 ) return 1;
+            else if ( m_currentPage < pageCount() ) return m_currentPage + 1;
+            else return -1;
         }
 
         int lastPageNumber() const {
@@ -54,6 +81,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
         QList<T *> m_list;
         int m_pageSize;
         int m_currentPage;
+        int m_fullCount;
 };
 
 }
