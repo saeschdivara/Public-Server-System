@@ -26,9 +26,10 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
         }
 
         QList<T *> getList() {
-            int startingPoint = (m_currentPage - 1) * m_pageSize;
+            int startingPoint = m_currentPage * m_pageSize;
             m_list = T::objects->getPart(startingPoint, m_pageSize);
             m_fullCount = T::objects->count();
+
             return m_list;
         }
 
@@ -59,12 +60,20 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
             return p;
         }
 
+        bool hasPrevious() const {
+            return m_currentPage > 1;
+        }
+
         int previousPage() const {
             if ( m_currentPage > 1 ) {
                 return m_currentPage - 1;
             }
 
             return -1;
+        }
+
+        bool hasNext() const {
+            return m_currentPage < pageCount();
         }
 
         int nextPage() const {
@@ -79,9 +88,9 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
 
     protected:
         QList<T *> m_list;
-        int m_pageSize;
-        int m_currentPage;
-        int m_fullCount;
+        int m_pageSize = 0;
+        int m_currentPage = 0;
+        int m_fullCount = 0;
 };
 
 }

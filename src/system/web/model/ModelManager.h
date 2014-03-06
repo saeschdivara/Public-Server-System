@@ -54,7 +54,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         typedef QList<T *> ModelList;
 
         ModelList all();
-        ModelList getPart(int start, int limit);
+        ModelList getPart(int start, int limit, bool fullCount = true);
         T * get(const QString & id);
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
@@ -128,12 +128,13 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
 }
 
 template <class T>
-typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limit)
+typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limit, bool fullCount)
 {
     Q_D(ModelManager);
 
     auto driver = getArangoDriver();
     auto select = builder()->createSelect(T::staticMetaObject.className(), limit);
+    select->setFullCounting(fullCount);
     select->setLimit(start, limit);
 
     auto cursor = driver->executeSelect(select);

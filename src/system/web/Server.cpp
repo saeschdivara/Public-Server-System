@@ -189,6 +189,8 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
     AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
+    qDebug() << url.path();
+
     try {
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
