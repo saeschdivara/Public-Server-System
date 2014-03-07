@@ -47,6 +47,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 
         bool isValid() const;
 
+        void save();
+
         QString toString() const;
 
     protected:
@@ -81,7 +83,7 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
             AbstractFormField * field = propValue.value<AbstractFormField *>();
 
             // Only if the field is in the post
-            if (m_post->contains(prop.name())) {
+            if (m_post->contains(QLatin1String("m_") + prop.name())) {
                 field->setValue(propValue);
             }
 
@@ -91,6 +93,7 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
 
     return fields;
 }
+
 template <class T>
 bool ModelForm<T>::isValid() const
 {
@@ -101,12 +104,22 @@ bool ModelForm<T>::isValid() const
     return true;
 }
 
+
+template <class T>
+void ModelForm<T>::save()
+{
+    for ( AbstractFormField * field : m_fields ) {
+        m_model->setProperty(field->name().toLatin1().data(), field->value());
+    }
+}
+
 template <class T>
 QString ModelForm<T>::toString() const
 {
     QString output;
 
     output += "<form method=\"POST\" action=\".\">";
+    output += QString("<input name=\"id\" type=\"hidden\" value=\"%1\" />").arg(m_model->dbCollectionKey());
 
     for ( AbstractFormField * field : m_fields ) {
         output += "<div class=\"widget\">";
