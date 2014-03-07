@@ -42,7 +42,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT TextInput : public WidgetInterface
 {
     public:
         virtual QString toString(const QString & name, const QVariant & value) const {
-            return QString("<input type=\"text\" name=\"m_%1\" value=\"%2\" />").arg(name, value.toString());
+            return QString("<input type=\"text\" name=\"m_%1_field\" value=\"%2\" />").arg(name, value.toString());
         }
 };
 
