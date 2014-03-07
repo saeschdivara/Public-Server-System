@@ -19,8 +19,17 @@ class UserSession
     public:
         UserSession(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response);
 
-        QList< QPair<QString, QString> > get;
-        QHash<QString, QString> post;
+        QList< QPair<QString, QString> > get() const {
+            return m_get;
+        }
+
+        QHash<QString, QString> post() const {
+            return m_post;
+        }
+
+    protected:
+        QList< QPair<QString, QString> > m_get;
+        QHash<QString, QString> m_post;
 };
 
 }
