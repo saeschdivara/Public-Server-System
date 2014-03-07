@@ -28,6 +28,7 @@
 
 #include "AbstractFormField.h"
 
+#include <QtCore/QDebug>
 #include <QtCore/QMetaProperty>
 
 namespace PublicServerSystem
@@ -82,9 +83,12 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
         if (propValue.canConvert(fieldMetaID)) {
             AbstractFormField * field = propValue.value<AbstractFormField *>();
 
+            QString propertyName = prop.name();
+            QString widgetName = QString("m_%1").arg(propertyName);
+
             // Only if the field is in the post
-            if (m_post->contains(QLatin1String("m_") + prop.name())) {
-                field->setValue(propValue);
+            if (m_post->contains(widgetName)) {
+                field->setValue(m_post->value(widgetName));
             }
 
             fields.append(field);
