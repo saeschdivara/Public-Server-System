@@ -161,6 +161,12 @@ T * ModelManager<T>::get(const QString &id)
     realID += QLatin1Char('/') + id;
 
     arangodb::Document * modelDoc = getArangoDriver()->getDocument(realID);
+
+    if ( modelDoc->hasErrorOccurred() ) {
+        modelDoc->deleteLater();
+        return Q_NULLPTR;
+    }
+
     modelDoc->sync();
     modelDoc->waitForResult();
     T * model = new T(modelDoc, 0);
