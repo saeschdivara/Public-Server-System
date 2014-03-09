@@ -53,6 +53,14 @@ QString CharField::toString() const
     return d->widget->toString(d->fieldName, d->fieldValue);
 }
 
+bool CharField::validate() const
+{
+    Q_D(const CharField);
+
+    if (d->fieldValue.toString().size() > 255) return false;
+    else return true;
+}
+
 }
 }
 }
