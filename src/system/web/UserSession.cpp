@@ -19,8 +19,10 @@ UserSession::UserSession(Tufao::HttpServerRequest *request, Tufao::HttpServerRes
     QUrlQuery query(url.query());
     this->m_get = query.queryItems();
 
-    QUrlQuery postQuery(QString(request->body()));
-    for ( QPair<QString, QString> itemPair : postQuery.queryItems() ) {
+    QByteArray requestBody = request->body().replace('+', "%20");
+    QString bodyString = requestBody;
+    QUrlQuery postQuery(bodyString);
+    for ( QPair<QString, QString> itemPair : postQuery.queryItems(QUrl::PrettyDecoded) ) {
         QString key = itemPair.first;
         QString value = itemPair.second;
 
