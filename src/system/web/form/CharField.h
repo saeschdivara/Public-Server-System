@@ -35,7 +35,7 @@ namespace Form
 
 class CharFieldPrivate;
 
-class CharField : public AbstractFormField
+class PUBLICSERVERSYSTEMSHARED_EXPORT CharField : public AbstractFormField
 {
         Q_OBJECT
     public:

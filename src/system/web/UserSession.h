@@ -27,9 +27,14 @@ class UserSession
             return m_post;
         }
 
+        QHash<QString, QString> files() const {
+            return m_files;
+        }
+
     protected:
         QList< QPair<QString, QString> > m_get;
         QHash<QString, QString> m_post;
+        QHash<QString, QString> m_files;
 };
 
 }

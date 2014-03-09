@@ -61,6 +61,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
 
         virtual QString toString() const = 0;
 
+        virtual bool hasFile() const;
+
     protected:
         AbstractFormField(AbstractFormFieldPrivate * ptr, const QString & name, const QString & description, QObject * parent = 0);
         AbstractFormFieldPrivate * d_ptr;

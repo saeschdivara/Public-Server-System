@@ -83,6 +83,11 @@ Widget::WidgetInterface *AbstractFormField::widget() const
     return d->widget;
 }
 
+bool AbstractFormField::hasFile() const
+{
+    return false;
+}
+
 AbstractFormField::AbstractFormField(AbstractFormFieldPrivate *ptr, const QString & name, const QString & description, QObject *parent) :
     QObject(parent),
     d_ptr(ptr)

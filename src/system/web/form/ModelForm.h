@@ -121,18 +121,30 @@ void ModelForm::save()
 
 QString ModelForm::toString() const
 {
+    bool hasFiles = false;
     QString output;
+    QString enctype;
 
-    output += "<form method=\"POST\" action=\".\">";
-    output += QString("<input name=\"id\" type=\"hidden\" value=\"%1\" />").arg(m_model->dbCollectionKey());
+    output += "<form method=\"POST\" action=\".\" enctype=\"%1\">";
 
     for ( AbstractFormField * field : m_fields ) {
         output += "<div class=\"widget\">";
         output += "<label>" + field->description() + "</label>";
         output += field->toString();
         output += "</div>";
+
+        if ( field->hasFile() ) hasFiles = true;
     }
 
+    if ( hasFiles ) {
+        enctype = "multipart/form-data";
+    }
+    else {
+        enctype = "application/x-www-form-urlencoded";
+    }
+
+    output = output.arg(enctype);
+    output += QString("<input name=\"id\" type=\"hidden\" value=\"%1\" />").arg(m_model->dbCollectionKey());
     output += "<input type=\"submit\" />";
     output += "</form>";
 

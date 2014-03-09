@@ -69,7 +69,9 @@ HEADERS += \
     system/rpc/RpcClient.h \
     system/rpc/RpcClient_p.h \
     system/web/UserSession.h \
-    system/web/view/Paginator.h
+    system/web/view/Paginator.h \
+    system/web/form/ImageField.h \
+    system/web/form/widget/FileInput.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -87,6 +89,7 @@ SOURCES += \
     system/rpc/RpcServer.cpp \
     system/rpc/RpcClient.cpp \
     system/web/view/ViewInterface.cpp \
-    system/web/UserSession.cpp
+    system/web/UserSession.cpp \
+    system/web/form/ImageField.cpp
 
 OTHER_FILES += \
