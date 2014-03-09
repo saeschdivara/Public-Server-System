@@ -26,6 +26,7 @@
 
 #include "public_server_system_globals.h"
 
+#include "system/web/model/AbstractModel.h"
 #include "AbstractFormField.h"
 
 #include <QtCore/QDebug>
@@ -38,11 +39,10 @@ namespace Web
 namespace Form
 {
 
-template <class T>
 class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 {
     public:
-        ModelForm(T * model, QHash<QString, QString> * post);
+        ModelForm(Model::AbstractModel * model, QHash<QString, QString> * post);
 
         QList<AbstractFormField *> getAllFields() const;
 
@@ -53,32 +53,30 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
         QString toString() const;
 
     protected:
-        T * m_model;
+        Model::AbstractModel * m_model;
         QHash<QString, QString> * m_post;
         QList<AbstractFormField *> m_fields;
 };
 
-template <class T>
-ModelForm<T>::ModelForm(T *model, QHash<QString, QString> *post) :
+ModelForm::ModelForm(Model::AbstractModel *model, QHash<QString, QString> *post) :
     m_model(model),
     m_post(post)
 {
     m_fields = getAllFields();
 }
 
-template <class T>
-QList<AbstractFormField *> ModelForm<T>::getAllFields() const
+QList<AbstractFormField *> ModelForm::getAllFields() const
 {
-    const QMetaObject metaObj = T::staticMetaObject;
-    int start = metaObj.propertyOffset();
-    int count = metaObj.propertyCount();
+    const QMetaObject * metaObj = m_model->metaObject();
+    int start = metaObj->propertyOffset();
+    int count = metaObj->propertyCount();
 
     int fieldMetaID = getAbstractFormFieldMetaID();
 
     QList<AbstractFormField *> fields;
 
     for (int i = start; i < count; ++i) {
-        QMetaProperty prop = metaObj.property(i);
+        QMetaProperty prop = metaObj->property(i);
         QVariant propValue = prop.read(m_model);
         if (propValue.canConvert(fieldMetaID)) {
             AbstractFormField * field = propValue.value<AbstractFormField *>();
@@ -98,8 +96,7 @@ QList<AbstractFormField *> ModelForm<T>::getAllFields() const
     return fields;
 }
 
-template <class T>
-bool ModelForm<T>::isValid() const
+bool ModelForm::isValid() const
 {
     for ( AbstractFormField * field : m_fields ) {
         if ( !field->isValid() ) return false;
@@ -109,16 +106,20 @@ bool ModelForm<T>::isValid() const
 }
 
 
-template <class T>
-void ModelForm<T>::save()
+void ModelForm::save()
 {
     for ( AbstractFormField * field : m_fields ) {
-        m_model->setProperty(field->name().toLatin1().data(), field->value());
+        // To which the QString is conerted is essentiel if the whole thing works
+        const char * name = field->name().toLocal8Bit().constData();
+        QVariant value = field->value();
+
+        m_model->setProperty(name, value.toString());
     }
+
+    m_model->save();
 }
 
-template <class T>
-QString ModelForm<T>::toString() const
+QString ModelForm::toString() const
 {
     QString output;
 
