@@ -58,8 +58,8 @@ void AbstractModel::save()
 {
     Q_D(AbstractModel);
 
-    d->doc->save();
-    d->doc->waitForResult();
+    if ( d->doc->save() )
+        d->doc->waitForResult();
 }
 
 void AbstractModel::saveAndDelete()

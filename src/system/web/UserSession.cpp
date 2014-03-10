@@ -3,6 +3,7 @@
 #include <headers.h>
 #include <url.h>
 
+#include <QtCore/QDebug>
 #include <QtCore/QUrlQuery>
 
 namespace PublicServerSystem
@@ -16,7 +17,15 @@ UserSession::UserSession(Tufao::HttpServerRequest *request, Tufao::HttpServerRes
     Tufao::Headers headers = request->headers();
 
     QUrlQuery query(url.query());
-    get = query.queryItems();
+    this->m_get = query.queryItems();
+
+    QUrlQuery postQuery(QString(request->body()));
+    for ( QPair<QString, QString> itemPair : postQuery.queryItems() ) {
+        QString key = itemPair.first;
+        QString value = itemPair.second;
+
+        this->m_post.insert(key, value);
+    }
 }
 
 }

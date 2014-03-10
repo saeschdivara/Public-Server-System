@@ -43,6 +43,9 @@ class CharField : public AbstractFormField
 
         virtual QString toString() const;
 
+    protected:
+        virtual bool validate() const;
+
     private:
         Q_DECLARE_PRIVATE(CharField)
 };
