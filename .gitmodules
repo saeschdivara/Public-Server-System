@@ -4,12 +4,14 @@
 [submodule "3rdparty/grantlee"]
 	path = 3rdparty/grantlee
 	url = git@github.com:saeschdivara/Qt-Grantlee.git
+	branch = master_github
 [submodule "3rdparty/QuaZIP"]
 	path = 3rdparty/QuaZIP
 	url = git@github.com:saeschdivara/QuaZIP.git
 [submodule "3rdparty/arangodb-driver"]
 	path = 3rdparty/arangodb-driver
 	url = git@github.com:saeschdivara/Qt-Arango-DB-Driver.git
+	branch = v0.6-develop
 [submodule "3rdparty/smpt-client-qt"]
 	path = 3rdparty/smpt-client-qt
 	url = git@github.com:saeschdivara/SmtpClient-for-Qt.git
