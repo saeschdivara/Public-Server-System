@@ -63,6 +63,10 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
 
         static arangodb::ArangoDBDriver * getArangoDriver();
 
+        static void registerDatabaseModel();
+
+        static QString getCollectionName();
+
         int count() const {
             Q_D(const ModelManager);
             return d->count;
@@ -91,7 +95,6 @@ template <class T>
 ModelManager<T>::ModelManager() :
     ModelManager(new ModelManagerPrivate)
 {
-    //
 }
 
 template <class T>
@@ -225,6 +228,23 @@ template <class T>
 arangodb::ArangoDBDriver *ModelManager<T>::getArangoDriver()
 {
     return gGetDriver();
+}
+
+template <class T>
+void ModelManager<T>::registerDatabaseModel()
+{
+    QString collectionName = getCollectionName();
+    if ( !getArangoDriver()->isColllectionExisting(collectionName) ) {
+        arangodb::Collection * dbCollection = getArangoDriver()->createCollection(collectionName);
+        dbCollection->save();
+    }
+}
+
+template <class T>
+QString ModelManager<T>::getCollectionName()
+{
+    QString name(T::staticMetaObject.className());
+    return name;
 }
 
 }
