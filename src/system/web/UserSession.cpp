@@ -4,6 +4,7 @@
 #include <url.h>
 
 #include <QtCore/QDebug>
+#include <QtCore/QFile>
 #include <QtCore/QUrlQuery>
 
 namespace PublicServerSystem
@@ -105,6 +106,51 @@ UserSession::UserSession(Tufao::HttpServerRequest *request, Tufao::HttpServerRes
 
                 QByteArray fileNameValue = fileNamePart.left(fileNamePart.length() -1);
                 fileNameValue = fileNameValue.right(fileNameValue.length() -1);
+
+                auto indexOfContentType = bodyData.indexOf(contentType);
+                if ( indexOfContentType == -1 ) break;
+                bodyData = bodyData.remove(indexOfContentType, contentType.length());
+
+                indexOfBreak = bodyData.indexOf(line_break);
+                if ( indexOfBreak == -1 ) break;
+                QByteArray mimeType = bodyData.left(indexOfBreak);
+                bodyData = bodyData.remove(0, indexOfBreak + line_break.length());
+
+                indexOfBreak = bodyData.indexOf(line_break);
+                if ( indexOfBreak == -1 ) break;
+                bodyData = bodyData.remove(indexOfBreak, line_break.length());
+
+                //
+                QFile file(fileNameValue);
+                if ( file.open(QIODevice::WriteOnly | QIODevice::Unbuffered) ) {
+
+                    const int space = 5000;
+
+                    QByteArray data;
+                    data.reserve(space);
+                    indexOfBreak = -1;
+
+                    qDebug() << bodyData.indexOf(line_break);
+
+                    while ( indexOfBreak == -1 ) {
+                        data = bodyData.left(space);
+
+                        indexOfBreak = data.indexOf(line_break);
+
+                        if ( indexOfBreak == -1 ) {
+                            bodyData = bodyData.remove(0, space);
+                            file.write(data);
+                        }
+                        else {
+                            data = bodyData.left(indexOfBreak);
+                            bodyData = bodyData.remove(0, indexOfBreak);
+
+                            file.write(data);
+                        }
+                    }
+
+                    file.close();
+                }
             }
         }
     }
