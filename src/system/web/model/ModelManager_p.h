@@ -24,6 +24,7 @@
 #ifndef MODELMANAGER_P_H
 #define MODELMANAGER_P_H
 
+#include <QBSelect.h>
 #include <QueryBuilder.h>
 
 namespace PublicServerSystem
@@ -39,6 +40,8 @@ class ModelManagerPrivate
         arangodb::QueryBuilder qb;
 
         int count;
+
+        QPair<QString, arangodb::QBSelect::SortingOrder> sorting;
 };
 
 }

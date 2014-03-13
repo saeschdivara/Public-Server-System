@@ -59,6 +59,13 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
 
+        void setDefaultSorting(const QString & column, arangodb::QBSelect::SortingOrder order) {
+            Q_D(ModelManager);
+
+            d->sorting.first = column;
+            d->sorting.second = order;
+        }
+
         T * create();
 
         static arangodb::ArangoDBDriver * getArangoDriver();
@@ -136,9 +143,13 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
     Q_D(ModelManager);
 
     auto driver = getArangoDriver();
-    auto select = builder()->createSelect(T::staticMetaObject.className(), limit);
+    auto select = builder()->createSelect(getCollectionName(), limit);
     select->setFullCounting(fullCount);
     select->setLimit(start, limit);
+
+    if ( !d->sorting.first.isEmpty() ) {
+        select->setSortingColumn(getCollectionName(), d->sorting.first, d->sorting.second);
+    }
 
     auto cursor = driver->executeSelect(select);
     cursor->waitForResult();
