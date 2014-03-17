@@ -71,7 +71,8 @@ HEADERS += \
     system/web/UserSession.h \
     system/web/view/Paginator.h \
     system/web/form/ImageField.h \
-    system/web/form/widget/FileInput.h
+    system/web/form/widget/FileInput.h \
+    system/db/DatabaseManager.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -90,6 +91,7 @@ SOURCES += \
     system/rpc/RpcClient.cpp \
     system/web/view/ViewInterface.cpp \
     system/web/UserSession.cpp \
-    system/web/form/ImageField.cpp
+    system/web/form/ImageField.cpp \
+    system/db/DatabaseManager.cpp
 
 OTHER_FILES += \
