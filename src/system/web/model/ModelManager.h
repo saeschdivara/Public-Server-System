@@ -129,8 +129,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
     for ( arangodb::Document * dataDoc : dataList ) {
-            dataDoc->sync();
-            dataDoc->waitForResult();
             resultList << new T(dataDoc, 0);
         }
 
@@ -160,8 +158,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
     d->count = cursor->count();
 
     for ( arangodb::Document * dataDoc : dataList ) {
-            dataDoc->sync();
-            dataDoc->waitForResult();
             resultList << new T(dataDoc, 0);
         }
 
@@ -181,8 +177,6 @@ T * ModelManager<T>::get(const QString &id)
         return Q_NULLPTR;
     }
 
-    modelDoc->sync();
-    modelDoc->waitForResult();
     T * model = new T(modelDoc, 0);
 
     return model;
@@ -203,8 +197,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString 
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
     for ( arangodb::Document * dataDoc : dataList ) {
-            dataDoc->sync();
-            dataDoc->waitForResult();
             resultList << new T(dataDoc, 0);
         }
 
