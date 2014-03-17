@@ -32,6 +32,7 @@
 #include <ArangoDBDriver.h>
 #include <Document.h>
 #include <QueryBuilder.h>
+#include <QBCursor.h>
 
 #include <QtCore/QDebug>
 
@@ -58,6 +59,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         T * get(const QString & id);
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
+
+        ModelList fromSelect(QSharedPointer<arangodb::QBSelect> select);
 
         void setDefaultSorting(const QString & column, arangodb::QBSelect::SortingOrder order) {
             Q_D(ModelManager);
@@ -120,19 +123,9 @@ ModelManager<T>::ModelManager(ModelManagerPrivate *ptr) :
 template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::all()
 {
-    auto driver = getArangoDriver();
-    auto select = builder()->createGetAllSelect(T::staticMetaObject.className());
+    auto select = builder()->createGetAllSelect(getCollectionName());
 
-    auto cursor = driver->executeSelect(select);
-    cursor->waitForResult();
-
-    ModelManager::ModelList resultList;
-    auto dataList = cursor->data();
-    for ( arangodb::Document * dataDoc : dataList ) {
-            resultList << new T(dataDoc, 0);
-        }
-
-    return resultList;
+    return fromSelect(select);
 }
 
 template <class T>
@@ -140,7 +133,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
 {
     Q_D(ModelManager);
 
-    auto driver = getArangoDriver();
     auto select = builder()->createSelect(getCollectionName(), limit);
     select->setFullCounting(fullCount);
     select->setLimit(start, limit);
@@ -149,25 +141,13 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limi
         select->setSortingColumn(getCollectionName(), d->sorting.first, d->sorting.second);
     }
 
-    auto cursor = driver->executeSelect(select);
-    cursor->waitForResult();
-
-    ModelManager::ModelList resultList;
-    auto dataList = cursor->data();
-
-    d->count = cursor->count();
-
-    for ( arangodb::Document * dataDoc : dataList ) {
-            resultList << new T(dataDoc, 0);
-        }
-
-    return resultList;
+    return fromSelect(select);
 }
 
 template <class T>
 T * ModelManager<T>::get(const QString &id)
 {
-    QString realID(T::staticMetaObject.className());
+    QString realID(getCollectionName());
     realID += QLatin1Char('/') + id;
 
     arangodb::Document * modelDoc = getArangoDriver()->getDocument(realID);
@@ -188,11 +168,26 @@ typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString 
     QJsonObject obj;
     obj.insert(exampleKey, QJsonValue::fromVariant(exampleValue));
 
-    auto select = builder()->createByExampleSelect(T::staticMetaObject.className(), obj);
+    auto select = builder()->createByExampleSelect(getCollectionName(), obj);
+
+    return fromSelect(select);
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::getByExample(QVariantMap example)
+{
+    Q_UNUSED(example)
+}
+
+ModelManager::ModelList ModelManager::fromSelect(QSharedPointer<arangodb::QBSelect> select)
+{
+    Q_D(ModelManager);
 
     auto driver = getArangoDriver();
     auto cursor = driver->executeSelect(select);
     cursor->waitForResult();
+
+    d->count = cursor->count();
 
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
@@ -201,12 +196,6 @@ typename ModelManager<T>::ModelList ModelManager<T>::getByExample(const QString 
         }
 
     return resultList;
-}
-
-template <class T>
-typename ModelManager<T>::ModelList ModelManager<T>::getByExample(QVariantMap example)
-{
-    Q_UNUSED(example)
 }
 
 template <class T>
