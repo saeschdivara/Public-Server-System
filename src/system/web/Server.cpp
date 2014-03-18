@@ -23,6 +23,7 @@
 
 #include "Server.h"
 #include "UserSession.h"
+#include "WebLogger.h"
 
 #include "system/core/Exception.h"
 
@@ -186,10 +187,11 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
     QString hostname = url.hostname();
     QString urlPath = url.path();
+    QString ip = request->socket()->peerAddress().toString();
 
     AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
-    qDebug() << url.path();
+    WebLogger::globalInstance()->log(ip, hostname, url.path(), "");
 
     try {
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));

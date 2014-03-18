@@ -72,7 +72,9 @@ HEADERS += \
     system/web/view/Paginator.h \
     system/web/form/ImageField.h \
     system/web/form/widget/FileInput.h \
-    system/db/DatabaseManager.h
+    system/db/DatabaseManager.h \
+    system/web/WebLogger.h \
+    system/web/model/logger/WebLog.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -92,6 +94,8 @@ SOURCES += \
     system/web/view/ViewInterface.cpp \
     system/web/UserSession.cpp \
     system/web/form/ImageField.cpp \
-    system/db/DatabaseManager.cpp
+    system/db/DatabaseManager.cpp \
+    system/web/WebLogger.cpp \
+    system/web/model/logger/WebLog.cpp
 
 OTHER_FILES += \
