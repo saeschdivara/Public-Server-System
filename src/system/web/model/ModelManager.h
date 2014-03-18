@@ -56,10 +56,14 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
 
         ModelList all();
         ModelList getPart(int start, int limit, bool fullCount = true);
+        ModelList getPart(QSharedPointer<arangodb::QBSelect> select, int start, int limit, bool fullCount = true);
+
         T * get(const QString & id);
+
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
 
+        ModelList fromSelect(QSharedPointer<arangodb::QBSimpleSelect> select);
         ModelList fromSelect(QSharedPointer<arangodb::QBSelect> select);
 
         void setDefaultSorting(const QString & column, arangodb::QBSelect::SortingOrder order) {
@@ -82,11 +86,11 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
             return d->count;
         }
 
+        arangodb::QueryBuilder * builder();
+
     protected:
         ModelManagerPrivate * d_ptr;
         ModelManager(ModelManagerPrivate * ptr);
-
-        arangodb::QueryBuilder * builder();
 
     private:
         Q_DECLARE_PRIVATE(ModelManager)
@@ -131,9 +135,16 @@ typename ModelManager<T>::ModelList ModelManager<T>::all()
 template <class T>
 typename ModelManager<T>::ModelList ModelManager<T>::getPart(int start, int limit, bool fullCount)
 {
+    auto select = builder()->createSelect(getCollectionName(), limit);
+
+    return getPart(select, start, limit, fullCount);
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::getPart(QSharedPointer<arangodb::QBSelect> select, int start, int limit, bool fullCount)
+{
     Q_D(ModelManager);
 
-    auto select = builder()->createSelect(getCollectionName(), limit);
     select->setFullCounting(fullCount);
     select->setLimit(start, limit);
 
@@ -179,7 +190,28 @@ typename ModelManager<T>::ModelList ModelManager<T>::getByExample(QVariantMap ex
     Q_UNUSED(example)
 }
 
-ModelManager::ModelList ModelManager::fromSelect(QSharedPointer<arangodb::QBSelect> select)
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::fromSelect(QSharedPointer<arangodb::QBSimpleSelect> select)
+{
+    Q_D(ModelManager);
+
+    auto driver = getArangoDriver();
+    auto cursor = driver->executeSelect(select);
+    cursor->waitForResult();
+
+    d->count = cursor->count();
+
+    ModelManager::ModelList resultList;
+    auto dataList = cursor->data();
+    for ( arangodb::Document * dataDoc : dataList ) {
+            resultList << new T(dataDoc, 0);
+        }
+
+    return resultList;
+}
+
+template <class T>
+typename ModelManager<T>::ModelList ModelManager<T>::fromSelect(QSharedPointer<arangodb::QBSelect> select)
 {
     Q_D(ModelManager);
 

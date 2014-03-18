@@ -5,6 +5,8 @@
 
 #include "system/web/model/AbstractModel.h"
 
+#include <QBSelect.h>
+
 #include <QtCore/QList>
 
 namespace PublicServerSystem
@@ -23,6 +25,14 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Paginator
             m_currentPage(currentPage)
         {
             if (m_pageSize < 1) m_pageSize = 1;
+        }
+
+        QList<T *> getList(QSharedPointer<arangodb::QBSelect> select) {
+            int startingPoint = m_currentPage * m_pageSize;
+            m_list = T::objects->getPart(select, startingPoint, m_pageSize);
+            m_fullCount = T::objects->count();
+
+            return m_list;
         }
 
         QList<T *> getList() {
