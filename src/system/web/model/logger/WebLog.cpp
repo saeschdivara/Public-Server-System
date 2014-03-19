@@ -59,6 +59,16 @@ QString WebLog::path() const
     return get("request_path").toString();
 }
 
+void WebLog::setCreationDate(const QDateTime &time)
+{
+    set("created", time);
+}
+
+QDateTime WebLog::created() const
+{
+    return get("created").toDateTime();
+}
+
 }
 }
 }
