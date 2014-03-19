@@ -191,7 +191,11 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
     AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
-    WebLogger::globalInstance()->log(ip, hostname, url.path(), "");
+    QString logData("agent:%1\r\n");
+    QString agent = headers.value("User-Agent");
+    logData = logData.arg(agent);
+
+    WebLogger::globalInstance()->log(ip, hostname, url.path(), logData);
 
     try {
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));

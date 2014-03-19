@@ -59,6 +59,16 @@ QString WebLog::path() const
     return get("request_path").toString();
 }
 
+void WebLog::setData(const QString &data)
+{
+    set("extra_data", data);
+}
+
+QString WebLog::data() const
+{
+    return get("extra_data").toString();
+}
+
 void WebLog::setCreationDate(const QDateTime &time)
 {
     set("created", time);
