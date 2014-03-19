@@ -26,6 +26,9 @@ void WebLogger::log(const QString &ip, const QString &host, const QString &reque
     WebLog * logModel = WebLog::objects->create();
     logModel->setIP(ip);
     logModel->setHost(host);
+    logModel->setPath(requestPath);
+
+    logModel->saveAndDelete();
 }
 
 }

@@ -20,6 +20,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT WebLog : public AbstractModel
         Q_OBJECT
         Q_PROPERTY(QString ip READ ip WRITE setIP)
         Q_PROPERTY(QString host READ host WRITE setHost)
+        Q_PROPERTY(QString path READ path WRITE setPath)
     public:
         WebLog(QObject *parent = 0);
         WebLog(arangodb::Document * doc, QObject *parent = 0);
@@ -29,6 +30,9 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT WebLog : public AbstractModel
 
         void setHost(const QString & host);
         QString host() const;
+
+        void setPath(const QString & path);
+        QString path() const;
 
         PU_DECLARE_MANAGER(WebLog);
 

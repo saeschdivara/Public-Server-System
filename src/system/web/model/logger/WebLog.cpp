@@ -1,6 +1,8 @@
 #include "WebLog.h"
 #include "system/web/model/AbstractModel_p.h"
 
+int it_fooo = qRegisterMetaType<PublicServerSystem::Web::Model::Logger::WebLog>("WebLog");
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -45,6 +47,16 @@ void WebLog::setHost(const QString &host)
 QString WebLog::host() const
 {
     return get("host").toString();
+}
+
+void WebLog::setPath(const QString &path)
+{
+    set("request_path", path);
+}
+
+QString WebLog::path() const
+{
+    return get("request_path").toString();
 }
 
 }

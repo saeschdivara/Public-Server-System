@@ -268,6 +268,11 @@ template <class T>
 QString ModelManager<T>::getCollectionName()
 {
     QString name(T::staticMetaObject.className());
+    if (name.contains(":")) {
+        QStringList nameSplitted = name.split("::");
+        name = nameSplitted.last();
+    }
+
     return name;
 }
 
