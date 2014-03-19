@@ -233,7 +233,7 @@ typename ModelManager<T>::ModelList ModelManager<T>::fromSelect(QSharedPointer<a
 template <class T>
 T *ModelManager<T>::create()
 {
-    arangodb::Document * modelDoc = getArangoDriver()->createDocument(T::staticMetaObject.className());
+    arangodb::Document * modelDoc = getArangoDriver()->createDocument(getCollectionName());
     T * model = new T(modelDoc, 0);
 
     return model;
