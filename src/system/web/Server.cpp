@@ -223,6 +223,7 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
                 stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
                 Grantlee::Context context = d->getSessionContext(request, response);
+                context.setUrlType(Grantlee::Context::RelativeUrls);
                 view->render(stream, site->templateEngine(), &context, session);
 
                 buffer.close();
