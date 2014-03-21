@@ -59,6 +59,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         ModelList getPart(QSharedPointer<arangodb::QBSelect> select, int start, int limit, bool fullCount = true);
 
         T * get(const QString & id);
+        T * random();
 
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
         ModelList getByExample(QVariantMap example);
@@ -168,6 +169,15 @@ T * ModelManager<T>::get(const QString &id)
         return Q_NULLPTR;
     }
 
+    T * model = new T(modelDoc, 0);
+
+    return model;
+}
+
+template <class T>
+T * ModelManager<T>::random()
+{
+    arangodb::Document * modelDoc = getArangoDriver()->getRandomDocument(getCollectionName());
     T * model = new T(modelDoc, 0);
 
     return model;
