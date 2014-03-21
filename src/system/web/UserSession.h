@@ -19,7 +19,7 @@ class UserSession
     public:
         UserSession(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response);
 
-        QList< QPair<QString, QString> > get() const {
+        QHash<QString, QString> get() const {
             return m_get;
         }
 
@@ -32,7 +32,7 @@ class UserSession
         }
 
     protected:
-        QList< QPair<QString, QString> > m_get;
+        QHash<QString, QString> m_get;
         QHash<QString, QString> m_post;
         QHash<QString, QString> m_files;
 };

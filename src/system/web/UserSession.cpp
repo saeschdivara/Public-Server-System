@@ -18,7 +18,13 @@ UserSession::UserSession(Tufao::HttpServerRequest *request, Tufao::HttpServerRes
     Tufao::Headers headers = request->headers();
 
     QUrlQuery query(url.query());
-    this->m_get = query.queryItems();
+
+    for ( QPair<QString, QString> itemPair : query.queryItems(QUrl::PrettyDecoded) ) {
+        QString key = itemPair.first;
+        QString value = itemPair.second;
+
+        this->m_get.insert(key, value);
+    }
 
     QByteArray contentType = headers.value("Content-Type");
     QList<QByteArray> splittedContentType = contentType.split(';');
