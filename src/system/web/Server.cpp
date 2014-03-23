@@ -29,12 +29,6 @@
 
 // Grantlee
 #include <lib/cachingloaderdecorator.h>
-// Tufao
-#include <headers.h>
-#include <httpfileserver.h>
-#include <httpserverrequest.h>
-#include <httpserverresponse.h>
-#include <url.h>
 // Qt
 #include <QtCore/QBuffer>
 #include <QtCore/QDir>
@@ -255,16 +249,12 @@ void Server::onClientReady(QtWebRequest *request, QtWebResponse *response)
     }
 }
 
-bool Server::serveStaticFile(QtWebRequest *request,
+void Server::serveStaticFile(QtWebRequest *request,
                              QtWebResponse *response,
                              const QString &path,
                              const QString & staticPath)
 {
-    Q_D(Server);
-
     response->serveStaticFile(path, staticPath, request);
-
-    return true;
 }
 
 }
