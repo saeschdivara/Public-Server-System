@@ -31,6 +31,7 @@
 #include <lib/engine.h>
 // Qt
 #include <QtCore/QTextStream>
+#include <QtWebRequest.h>
 
 namespace PublicServerSystem
 {
@@ -47,7 +48,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
         virtual void render(QTextStream & stream,
                             Grantlee::Engine * templateEngine,
                             Grantlee::Context * requestContext,
-                            UserSession * session) = 0;
+                            QtWebRequest * request) = 0;
 };
 
 void render(const QString & templateName,

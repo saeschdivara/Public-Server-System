@@ -35,6 +35,8 @@
 // Qt
 #include <QtNetwork/QHostAddress>
 
+#include <QtWebServer.h>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -69,8 +71,11 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
         ServerPrivate * d_ptr;
 
     protected Q_SLOTS:
-        void clientConnectionReady(Tufao::HttpServerRequest *request,
-                                   Tufao::HttpServerResponse *response);
+
+        void onClientReady(QtWebRequest *request, QtWebResponse *response);
+        bool serveStaticFile(QtWebRequest *request,
+                             QtWebResponse *response,
+                             const QString & path, const QString &staticPath);
 
         bool serveStaticFile(Tufao::HttpServerRequest *request,
                               Tufao::HttpServerResponse *response, const QString &path);

@@ -56,8 +56,7 @@ class ServerPrivate
         // -----------[PROPERTIES] -----------
         QHash<QString, AbstractSite *> websites;
         // Servers
-        Tufao::HttpServer * normalServer = Q_NULLPTR;
-        Tufao::HttpsServer* secureServer = Q_NULLPTR;
+        QtWebServer * server = Q_NULLPTR;
         // Static files
         QString diskStaticFilesPath;
         QString staticFilesPath;
@@ -69,15 +68,14 @@ class ServerPrivate
         QSslCertificate certificate;
 
         // -----------[METHODS] -----------
-        Grantlee::Context getSessionContext(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response) {
+        Grantlee::Context getSessionContext(QtWebRequest * request) {
             Grantlee::Context context;
 
             // Server
             context.insert("STATIC_URL",  QLatin1Char('/') + staticFilesPath + QLatin1Char('/'));
             context.insert("MEDIA_URL",  QLatin1Char('/') + mediaFilesPath + QLatin1Char('/'));
 
-            Tufao::Url url(Tufao::Url::url(request));
-            context.insert("REQUEST_URL", url.path());
+            context.insert("REQUEST_URL", request->requestPath());
 
             // Session
             //
@@ -98,9 +96,7 @@ Server::Server(QObject *parent) :
 
 Server::~Server()
 {
-    if(d_ptr->normalServer) d_ptr->normalServer->close();
-    if(d_ptr->secureServer) d_ptr->secureServer->close();
-
+    delete d_ptr->server;
     delete d_ptr;
 }
 
@@ -113,18 +109,19 @@ void Server::addWebsite(const QString &name, AbstractSite *site)
 bool Server::listenOnNormalConnections(const QHostAddress &address, quint16 port)
 {
     Q_D(Server);
-    if (!d->normalServer)
-        d->normalServer = new Tufao::HttpServer(this);
 
-    QObject::connect( d->normalServer, &Tufao::HttpServer::requestReady,
-                      this, &Server::clientConnectionReady
+    d->server = new QtWebServer;
+
+    QObject::connect( d->server, &QtWebServer::clientConnectionReady,
+                      this, &Server::onClientReady,
+                      Qt::DirectConnection
                       );
 
-    bool isListening = d->normalServer->listen(address, port);
+    bool isListening = d->server->listen(address, port);
 
-    if (!isListening) {
-            qWarning() << "The server couldn't listen";
-        }
+    if ( !isListening ) {
+        qWarning() << "The server couldn't listen: " << d->server->errorString();
+    }
 
     return isListening;
 }
@@ -146,24 +143,40 @@ void Server::setMediaDir(const QString &dir, const QString &websitePath)
 bool Server::listenOnSecureConnections(const QHostAddress &address, quint16 port)
 {
     Q_D(Server);
-    if (!d->secureServer)
-        d->secureServer = new Tufao::HttpsServer(this);
 
-    QObject::connect( d->secureServer, &Tufao::HttpsServer::requestReady,
-                      this, &Server::clientConnectionReady
+    d->server = new QtWebServer;
+    d->server->setSecure(true);
+
+    QObject::connect( d->server, &QtWebServer::clientConnectionReady,
+                      this, &Server::onClientReady,
+                      Qt::DirectConnection
                       );
 
-    // Set the necessary things before listening
-    d->secureServer->setPrivateKey(d->privateKey);
-    d->secureServer->setLocalCertificate(d->certificate);
+    bool isListening = d->server->listen(address, port);
 
-    bool isListening = d->secureServer->listen(address, port);
-
-    if (!isListening) {
-            qWarning() << "The server couldn't listen";
-        }
+    if ( !isListening ) {
+        qWarning() << "The server couldn't listen: " << d->server->errorString();
+    }
 
     return isListening;
+//    if (!d->secureServer)
+//        d->secureServer = new Tufao::HttpsServer(this);
+
+//    QObject::connect( d->secureServer, &Tufao::HttpsServer::requestReady,
+//                      this, &Server::clientConnectionReady
+//                      );
+
+//    // Set the necessary things before listening
+//    d->secureServer->setPrivateKey(d->privateKey);
+//    d->secureServer->setLocalCertificate(d->certificate);
+
+//    bool isListening = d->secureServer->listen(address, port);
+
+//    if (!isListening) {
+//            qWarning() << "The server couldn't listen";
+//        }
+
+//    return isListening;
 }
 
 void Server::setPrivateKey(const QSslKey &key)
@@ -178,16 +191,17 @@ void Server::setLocalCertificate(const QSslCertificate &certificate)
     d->certificate = certificate;
 }
 
-void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
+void Server::onClientReady(QtWebRequest *request, QtWebResponse *response)
 {
     Q_D(Server);
 
-    Tufao::Url url(Tufao::Url::url(request));
-    Tufao::Headers headers = request->headers();
+    QHash<QByteArray, QByteArray> headers = request->headers();
 
-    QString hostname = url.hostname();
-    QString urlPath = url.path();
-    QString ip = request->socket()->peerAddress().toString();
+    QList<QByteArray> splittedHost = headers.value("Host").split(':');
+
+    QString hostname = splittedHost.first();
+    QString urlPath = request->requestPath();
+    QString ip = request->ip();
 
     AbstractSite * site = d->websites.value(hostname, Q_NULLPTR);
 
@@ -195,25 +209,25 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
     QString agent = headers.value("User-Agent");
     logData = logData.arg(agent);
 
-    WebLogger::globalInstance()->log(ip, hostname, url.path(), logData);
+    WebLogger::globalInstance()->log(ip, hostname, urlPath, logData);
 
     try {
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
         if (urlPath.startsWith(QLatin1Char('/') + d->staticFilesPath + QLatin1Char('/'))) {
-                if (!serveStaticFile(request, response, d->diskStaticFilesPath)) {
-                        Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The file doesn't exists"));
-                    }
+                serveStaticFile(request,
+                                response,
+                                d->diskStaticFilesPath,
+                                d->staticFilesPath);
             }
         else if (urlPath.startsWith(QLatin1Char('/') + d->mediaFilesPath + QLatin1Char('/'))) {
-                if (!serveStaticFile(request, response, d->diskMediaFilesPath)) {
-                        Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The file doesn't exists"));
-                    }
+                serveStaticFile(request,
+                                response,
+                                d->diskMediaFilesPath,
+                                d->mediaFilesPath);
             }
         else {
                 View::ViewInterface * view = site->view(urlPath);
-
-                UserSession * session = d->getSession(request, response);
 
                 QBuffer buffer;
                 buffer.open(QIODevice::ReadWrite);
@@ -222,27 +236,39 @@ void Server::clientConnectionReady(Tufao::HttpServerRequest *request, Tufao::Htt
 
                 stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-                Grantlee::Context context = d->getSessionContext(request, response);
+                Grantlee::Context context = d->getSessionContext(request);
                 context.setUrlType(Grantlee::Context::RelativeUrls);
-                view->render(stream, site->templateEngine(), &context, session);
+                view->render(stream, site->templateEngine(), &context, request);
 
                 buffer.close();
 
                 QByteArray renderedView = buffer.data();
 
-                response->writeHead(Tufao::HttpServerResponse::OK);
-                response->end(renderedView);
+                response->setStatus(QtWebResponse::StatusCode::OK, "OK");
+                response->write(renderedView);
+                response->end();
             }
     }
     catch(Core::Exception ex) {
-        response->writeHead(Core::errorCodeToStatusCode(ex.code()));
-        response->end(ex.what());
+        response->setStatus(QtWebResponse::StatusCode::NOT_FOUND, ex.what());
+        response->end();
     }
     catch (...) {
-        response->writeHead(Tufao::HttpServerResponse::INTERNAL_SERVER_ERROR);
-        response->end("Error");
+        response->setStatus(QtWebResponse::StatusCode::INTERNAL_SERVER_ERROR, "");
+        response->end();
     }
+}
 
+bool Server::serveStaticFile(QtWebRequest *request,
+                             QtWebResponse *response,
+                             const QString &path,
+                             const QString & staticPath)
+{
+    Q_D(Server);
+
+    response->serveStaticFile(path, staticPath, request);
+
+    return true;
 }
 
 bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response, const QString & path)

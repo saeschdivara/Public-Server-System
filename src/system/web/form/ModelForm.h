@@ -42,7 +42,7 @@ namespace Form
 class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 {
     public:
-        ModelForm(Model::AbstractModel * model, QHash<QString, QString> * post);
+        ModelForm(Model::AbstractModel * model, QHash<QByteArray, QByteArray> * post);
 
         QList<AbstractFormField *> getAllFields() const;
 
@@ -54,11 +54,11 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 
     protected:
         Model::AbstractModel * m_model;
-        QHash<QString, QString> * m_post;
+        QHash<QByteArray, QByteArray> * m_post;
         QList<AbstractFormField *> m_fields;
 };
 
-ModelForm::ModelForm(Model::AbstractModel *model, QHash<QString, QString> *post) :
+ModelForm::ModelForm(Model::AbstractModel *model, QHash<QByteArray, QByteArray> *post) :
     m_model(model),
     m_post(post)
 {
@@ -85,8 +85,8 @@ QList<AbstractFormField *> ModelForm::getAllFields() const
             QString widgetName = QString("m_%1").arg(propertyName);
 
             // Only if the field is in the post
-            if (m_post->contains(widgetName)) {
-                field->setValue(m_post->value(widgetName));
+            if (m_post->contains(widgetName.toUtf8())) {
+                field->setValue(m_post->value(widgetName.toUtf8()));
             }
 
             fields.append(field);

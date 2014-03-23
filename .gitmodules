@@ -15,3 +15,7 @@
 [submodule "3rdparty/smpt-client-qt"]
 	path = 3rdparty/smpt-client-qt
 	url = git@github.com:saeschdivara/SmtpClient-for-Qt.git
+[submodule "3rdparty/Qt-Http-Server"]
+	path = 3rdparty/Qt-Http-Server
+	url = git@github.com:saeschdivara/Qt-Http-Server.git
+	branch = master

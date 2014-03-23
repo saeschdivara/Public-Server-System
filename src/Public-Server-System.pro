@@ -10,6 +10,7 @@ QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11
 
 CONFIG(release, debug|release): {
+    LIBS += -L$$PWD/../dist/3rdparty/qt-http-server/release/ -lQt-Web-Server
     LIBS += -L$$PWD/../dist/3rdparty/tufao/release/ -ltufao
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/release/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/release/ -ltemplate_library
@@ -18,6 +19,7 @@ CONFIG(release, debug|release): {
     DEFINES += PUBLIC_SERVER_SYSTEM_DEBUG
 }
 else:CONFIG(debug, debug|release): {
+    LIBS += -L$$PWD/../dist/3rdparty/qt-http-server/debug/ -lQt-Web-Server
     LIBS += -L$$PWD/../dist/3rdparty/tufao/debug/ -ltufao
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/debug/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
@@ -25,6 +27,9 @@ else:CONFIG(debug, debug|release): {
 
     DEFINES += PUBLIC_SERVER_SYSTEM_RELEASE
 }
+
+INCLUDEPATH += $$PWD/../3rdparty/qt-http-server/src
+DEPENDPATH += $$PWD/../3rdparty/qt-http-server/src
 
 INCLUDEPATH += $$PWD/../3rdparty/tufao/src/
 DEPENDPATH += $$PWD/../3rdparty/tufao/src/
