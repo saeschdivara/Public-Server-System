@@ -2,12 +2,6 @@
 
 #include "RpcServer_p.h"
 
-// Tufao
-#include <headers.h>
-#include <httpserverrequest.h>
-#include <httpserverresponse.h>
-#include <url.h>
-
 // Qt
 #include <QtCore/QBuffer>
 #include <QtCore/QDebug>
@@ -26,8 +20,6 @@ Server::Server(QObject *parent) :
 
 Server::~Server()
 {
-    d_ptr->server->close();
-
     delete d_ptr->server;
     delete d_ptr;
 }
@@ -43,7 +35,7 @@ void Server::listen(const QHostAddress &address, quint16 port)
     Q_D(Server);
     d->server->listen(address, port);
 
-    QObject::connect( d->server, &Tufao::HttpServer::requestReady,
+    QObject::connect( d->server, &QtWebServer::clientConnectionReady,
                       this, &Server::handleConnection
                       );
 }
@@ -52,18 +44,14 @@ Server::Server(ServerPrivate *ptr, QObject *parent) :
     QObject(parent),
     d_ptr(ptr)
 {
-    ptr->server = new Tufao::HttpServer;
+    ptr->server = new QtWebServer;
 }
 
-void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response)
+void Server::handleConnection(QtWebRequest *request, QtWebResponse *response)
 {
     Q_D(Server);
 
-    Tufao::Url url(Tufao::Url::url(request));
-    Tufao::Headers headers = request->headers();
-
-    QString hostname = url.hostname();
-    QString urlPath = url.path();
+    QString urlPath = request->requestPath();
 
     for( QPair< QString, RpcCommandFunction > pair : d->commands ) {
         QString regexString = pair.first;
@@ -75,8 +63,14 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
         if (hasMatch) {
             auto commandFunction = pair.second;
 
-            QByteArray postData = request->body();
-            QByteArray method = request->method();
+            QByteArray postData = ""; //request->body();
+            QtWebRequest::RequestMethod requestMethod = request->method();
+
+            QByteArray method;
+
+            if ( requestMethod == QtWebRequest::RequestMethod::Get ) {
+                method = "GET";
+            }
 
             QBuffer buffer;
             buffer.open(QIODevice::ReadWrite);
@@ -91,15 +85,16 @@ void Server::handleConnection(Tufao::HttpServerRequest *request, Tufao::HttpServ
 
             QByteArray renderedView = buffer.data();
 
-            response->writeHead(Tufao::HttpServerResponse::OK);
-            response->end(renderedView);
+            response->setStatus(QtWebResponse::StatusCode::OK);
+            response->write(renderedView);
+            response->end();
 
             return;
         }
     }
 
-    response->writeHead(Tufao::HttpServerResponse::NOT_FOUND);
-    response->end("Not found");
+    response->setStatus(QtWebResponse::StatusCode::NOT_FOUND);
+    response->end();
 }
 
 }

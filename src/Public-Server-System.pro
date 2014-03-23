@@ -11,7 +11,6 @@ CONFIG += c++11
 
 CONFIG(release, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/qt-http-server/release/ -lQt-Web-Server
-    LIBS += -L$$PWD/../dist/3rdparty/tufao/release/ -ltufao
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/release/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/release/ -ltemplate_library
     LIBS += -L$$PWD/../dist/3rdparty/smpt-client-qt/release/ -lSMTPEmail
@@ -20,7 +19,6 @@ CONFIG(release, debug|release): {
 }
 else:CONFIG(debug, debug|release): {
     LIBS += -L$$PWD/../dist/3rdparty/qt-http-server/debug/ -lQt-Web-Server
-    LIBS += -L$$PWD/../dist/3rdparty/tufao/debug/ -ltufao
     LIBS += -L$$PWD/../dist/3rdparty/arangodb-driver/debug/ -larangodb-driver
     LIBS += -L$$PWD/../dist/3rdparty/grantlee/template_library/debug/ -ltemplate_library
     LIBS += -L$$PWD/../dist/3rdparty/smpt-client-qt/debug/ -lSMTPEmail
@@ -30,9 +28,6 @@ else:CONFIG(debug, debug|release): {
 
 INCLUDEPATH += $$PWD/../3rdparty/qt-http-server/src
 DEPENDPATH += $$PWD/../3rdparty/qt-http-server/src
-
-INCLUDEPATH += $$PWD/../3rdparty/tufao/src/
-DEPENDPATH += $$PWD/../3rdparty/tufao/src/
 
 INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/src/
 INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/include/
@@ -73,7 +68,6 @@ HEADERS += \
     system/rpc/RpcServer_p.h \
     system/rpc/RpcClient.h \
     system/rpc/RpcClient_p.h \
-    system/web/UserSession.h \
     system/web/view/Paginator.h \
     system/web/form/ImageField.h \
     system/web/form/widget/FileInput.h \
@@ -97,7 +91,6 @@ SOURCES += \
     system/rpc/RpcServer.cpp \
     system/rpc/RpcClient.cpp \
     system/web/view/ViewInterface.cpp \
-    system/web/UserSession.cpp \
     system/web/form/ImageField.cpp \
     system/db/DatabaseManager.cpp \
     system/web/WebLogger.cpp \

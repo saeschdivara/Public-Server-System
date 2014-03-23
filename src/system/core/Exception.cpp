@@ -28,22 +28,6 @@ namespace PublicServerSystem
 namespace Core
 {
 
-Tufao::HttpServerResponse::StatusCode errorCodeToStatusCode(ErrorCode code) {
-    Tufao::HttpServerResponse::StatusCode status;
-
-    switch (code)
-        {
-    case ErrorCode::NotFound:
-        status = Tufao::HttpServerResponse::NOT_FOUND;
-        break;
-    default:
-        status = Tufao::HttpServerResponse::INTERNAL_SERVER_ERROR;
-        break;
-        }
-
-    return status;
-}
-
 }
 }
 

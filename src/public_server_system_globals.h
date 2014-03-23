@@ -27,6 +27,8 @@
 #include <QtCore/qglobal.h>
 #include <QtCore/QObject>
 
+#include <QtWebRequest.h>
+
 #if defined(PUBLIC_SERVER_SYSTEM_LIBRARY)
 #  define PUBLICSERVERSYSTEMSHARED_EXPORT Q_DECL_EXPORT
 #else

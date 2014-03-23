@@ -29,11 +29,9 @@
 #include "system/core/ServerInterface.h"
 #include "system/web/AbstractSite.h"
 
-// Tufao
-#include <httpserver.h>
-#include <httpsserver.h>
 // Qt
 #include <QtNetwork/QHostAddress>
+#include <QtNetwork/QSslSocket>
 
 #include <QtWebServer.h>
 
@@ -74,7 +72,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
 
         void onClientReady(QtWebRequest *request, QtWebResponse *response);
 
-        bool serveStaticFile(QtWebRequest *request,
+        void serveStaticFile(QtWebRequest *request,
                              QtWebResponse *response,
                              const QString & path, const QString &staticPath);
 

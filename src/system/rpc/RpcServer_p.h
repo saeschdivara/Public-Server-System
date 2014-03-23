@@ -6,8 +6,8 @@
 // std
 #include <functional>
 
-// Tufao
-#include <httpserver.h>
+// Qt
+#include <QtWebServer.h>
 
 namespace PublicServerSystem
 {
@@ -17,7 +17,7 @@ namespace Rpc
 class ServerPrivate
 {
     public:
-        Tufao::HttpServer * server;
+        QtWebServer * server;
         QList< QPair< QString, RpcCommandFunction > > commands;
 };
 

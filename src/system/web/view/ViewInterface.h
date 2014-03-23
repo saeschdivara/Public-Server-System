@@ -25,7 +25,6 @@
 #define VIEWINTERFACE_H
 
 #include "public_server_system_globals.h"
-#include "system/web/UserSession.h"
 
 // Grantlee
 #include <lib/engine.h>

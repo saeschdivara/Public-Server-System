@@ -22,7 +22,6 @@
  *********************************************************************************/
 
 #include "Server.h"
-#include "UserSession.h"
 #include "WebLogger.h"
 
 #include "system/core/Exception.h"

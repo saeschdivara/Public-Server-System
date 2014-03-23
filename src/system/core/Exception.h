@@ -26,8 +26,6 @@
 
 #include "public_server_system_globals.h"
 
-#include <httpserverresponse.h>
-
 #include <exception>
 
 namespace PublicServerSystem
@@ -62,8 +60,6 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Exception : std::exception
         ErrorCode m_code;
         QString m_reason;
 };
-
-PUBLICSERVERSYSTEMSHARED_EXPORT Tufao::HttpServerResponse::StatusCode errorCodeToStatusCode(ErrorCode code);
 
 }
 }

@@ -8,11 +8,10 @@
 // std
 #include <functional>
 
-// Tufao
-#include <httpserver.h>
-
 // Qt
 #include <QtNetwork/QHostAddress>
+
+#include <QtWebServer.h>
 
 namespace PublicServerSystem
 {
@@ -37,7 +36,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
         ServerPrivate * d_ptr;
 
     protected Q_SLOTS:
-        void handleConnection(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response);
+        void handleConnection(QtWebRequest * request, QtWebResponse * response);
 
     private:
         Q_DECLARE_PRIVATE(Server)
