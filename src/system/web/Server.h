@@ -73,12 +73,10 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT Server : public QObject, public Core::Serv
     protected Q_SLOTS:
 
         void onClientReady(QtWebRequest *request, QtWebResponse *response);
+
         bool serveStaticFile(QtWebRequest *request,
                              QtWebResponse *response,
                              const QString & path, const QString &staticPath);
-
-        bool serveStaticFile(Tufao::HttpServerRequest *request,
-                              Tufao::HttpServerResponse *response, const QString &path);
 
     private:
         Q_DECLARE_PRIVATE(Server)

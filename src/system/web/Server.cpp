@@ -82,10 +82,6 @@ class ServerPrivate
 
             return context;
         }
-
-        UserSession * getSession(Tufao::HttpServerRequest * request, Tufao::HttpServerResponse * response) {
-            return new UserSession(request, response);
-        }
 };
 
 Server::Server(QObject *parent) :
@@ -268,33 +264,6 @@ bool Server::serveStaticFile(QtWebRequest *request,
 
     response->serveStaticFile(path, staticPath, request);
 
-    return true;
-}
-
-bool Server::serveStaticFile(Tufao::HttpServerRequest *request, Tufao::HttpServerResponse *response, const QString & path)
-{
-    Q_D(Server);
-
-    QString resource(QByteArray::fromPercentEncoding(Tufao::Url(request->url())
-                                                     .path().toUtf8()));
-
-    QString fileName(QDir::cleanPath(path
-                                     + QDir::toNativeSeparators(resource)));
-
-
-    fileName = fileName.replace("/" + d->staticFilesPath + "/", "/");
-    fileName = fileName.replace("/" + d->mediaFilesPath + "/", "/");
-
-    if (!fileName.startsWith(path + QDir::separator()))
-        return false;
-
-    {
-        QFileInfo fileInfo(fileName);
-        if (!fileInfo.exists() || !fileInfo.isFile())
-            return false;
-    }
-
-    Tufao::HttpFileServer::serveFile(fileName, request, response);
     return true;
 }
 
