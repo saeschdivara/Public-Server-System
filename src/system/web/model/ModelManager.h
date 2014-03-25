@@ -58,6 +58,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         ModelList getPart(int start, int limit, bool fullCount = true);
         ModelList getPart(QSharedPointer<arangodb::QBSelect> select, int start, int limit, bool fullCount = true);
 
+        T * createModel(arangodb::Document * doc);
         T * get(const QString & id);
         T * random();
 
@@ -157,6 +158,14 @@ typename ModelManager<T>::ModelList ModelManager<T>::getPart(QSharedPointer<aran
 }
 
 template <class T>
+T * ModelManager<T>::createModel(arangodb::Document *doc)
+{
+    doc->setDriver(getArangoDriver());
+    T * model = new T(doc, 0);
+    return model;
+}
+
+template <class T>
 T * ModelManager<T>::get(const QString &id)
 {
     QString realID(getCollectionName());
@@ -169,7 +178,7 @@ T * ModelManager<T>::get(const QString &id)
         return Q_NULLPTR;
     }
 
-    T * model = new T(modelDoc, 0);
+    T * model = createModel(modelDoc);
 
     return model;
 }
@@ -178,7 +187,7 @@ template <class T>
 T * ModelManager<T>::random()
 {
     arangodb::Document * modelDoc = getArangoDriver()->getRandomDocument(getCollectionName());
-    T * model = new T(modelDoc, 0);
+    T * model = createModel(modelDoc);
 
     return model;
 }
@@ -214,7 +223,7 @@ typename ModelManager<T>::ModelList ModelManager<T>::fromSelect(QSharedPointer<a
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
     for ( arangodb::Document * dataDoc : dataList ) {
-            resultList << new T(dataDoc, 0);
+            resultList << createModel(dataDoc);
         }
 
     return resultList;
@@ -234,7 +243,7 @@ typename ModelManager<T>::ModelList ModelManager<T>::fromSelect(QSharedPointer<a
     ModelManager::ModelList resultList;
     auto dataList = cursor->data();
     for ( arangodb::Document * dataDoc : dataList ) {
-            resultList << new T(dataDoc, 0);
+            resultList << createModel(dataDoc);
         }
 
     return resultList;
@@ -244,7 +253,7 @@ template <class T>
 T *ModelManager<T>::create()
 {
     arangodb::Document * modelDoc = getArangoDriver()->createDocument(getCollectionName());
-    T * model = new T(modelDoc, 0);
+    T * model = createModel(modelDoc);
 
     return model;
 }
