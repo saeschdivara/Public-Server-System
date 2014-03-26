@@ -1,9 +1,12 @@
 import os
 import sys
 
-# Tufao
+# Webserver
 os.chdir("./dist/3rdparty/qt-http-server/release/")
-os.system("rm -r *.*")
+try:
+    os.system("rm -r *.*")
+except:
+    pass
 os.system("qmake ./../../../../3rdparty/Qt-Http-Server/")
 os.system("make -j8")
 
