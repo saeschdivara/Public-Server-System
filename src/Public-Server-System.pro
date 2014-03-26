@@ -26,8 +26,8 @@ else:CONFIG(debug, debug|release): {
     DEFINES += PUBLIC_SERVER_SYSTEM_RELEASE
 }
 
-INCLUDEPATH += $$PWD/../3rdparty/qt-http-server/src
-DEPENDPATH += $$PWD/../3rdparty/qt-http-server/src
+INCLUDEPATH += $$PWD/../3rdparty/Qt-Http-Server/src
+DEPENDPATH += $$PWD/../3rdparty/Qt-Http-Server/src
 
 INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/src/
 INCLUDEPATH += $$PWD/../3rdparty/arangodb-driver/include/
