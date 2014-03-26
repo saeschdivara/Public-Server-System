@@ -16,9 +16,9 @@ os.mkdir("dist/3rdparty/arangodb-driver/debug")
 os.mkdir("dist/3rdparty/arangodb-driver/release")
 
 # Tufao
-os.mkdir("dist/3rdparty/tufao")
-os.mkdir("dist/3rdparty/tufao/debug")
-os.mkdir("dist/3rdparty/tufao/release")
+os.mkdir("dist/3rdparty/qt-http-server")
+os.mkdir("dist/3rdparty/qt-http-server/debug")
+os.mkdir("dist/3rdparty/qt-http-server/release")
 
 # Grantlee
 os.mkdir("dist/3rdparty/grantlee")

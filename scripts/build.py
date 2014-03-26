@@ -2,9 +2,9 @@ import os
 import sys
 
 # Tufao
-os.chdir("./dist/3rdparty/tufao/release/")
+os.chdir("./dist/3rdparty/qt-http-server/release/")
 os.system("rm -r *.*")
-os.system("qmake ./../../../../3rdparty/tufao/")
+os.system("qmake ./../../../../3rdparty/Qt-Http-Server/")
 os.system("make -j8")
 
 # ArangoDB
