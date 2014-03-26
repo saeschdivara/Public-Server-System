@@ -7,7 +7,7 @@ try:
     os.system("rm -r *.*")
 except:
     pass
-os.system("qmake ./../../../../3rdparty/Qt-Http-Server/")
+os.system("qmake ./../../../../3rdparty/Qt-Http-Server/src")
 os.system("make -j8")
 
 # ArangoDB
