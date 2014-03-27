@@ -169,6 +169,7 @@ template <class T>
 T * ModelManager<T>::get(const QString &key)
 {
     arangodb::Document * modelDoc = getArangoDriver()->getDocument(getCollectionName(), key);
+    modelDoc->waitForResult();
 
     if ( modelDoc->hasErrorOccurred() ) {
         modelDoc->deleteLater();
