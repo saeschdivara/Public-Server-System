@@ -59,7 +59,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelManager
         ModelList getPart(QSharedPointer<arangodb::QBSelect> select, int start, int limit, bool fullCount = true);
 
         T * createModel(arangodb::Document * doc);
-        T * get(const QString & id);
+        T * get(const QString & key);
         T * random();
 
         ModelList getByExample(const QString & exampleKey, QVariant exampleValue);
@@ -166,12 +166,9 @@ T * ModelManager<T>::createModel(arangodb::Document *doc)
 }
 
 template <class T>
-T * ModelManager<T>::get(const QString &id)
+T * ModelManager<T>::get(const QString &key)
 {
-    QString realID(getCollectionName());
-    realID += QLatin1Char('/') + id;
-
-    arangodb::Document * modelDoc = getArangoDriver()->getDocument(realID);
+    arangodb::Document * modelDoc = getArangoDriver()->getDocument(getCollectionName(), key);
 
     if ( modelDoc->hasErrorOccurred() ) {
         modelDoc->deleteLater();
