@@ -58,7 +58,11 @@ void AbstractModel::save()
 {
     Q_D(AbstractModel);
 
-    if ( d->doc->save() ) {
+    if ( d->doc->isCreated() ) {
+        d->doc->update();
+        d->doc->waitForResult();
+    }
+    else if ( d->doc->save() ) {
         d->doc->waitForResult();
     }
 }
