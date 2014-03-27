@@ -113,7 +113,7 @@ void ModelForm::save()
         const char * name = field->name().toLocal8Bit().constData();
         QVariant value = field->value();
 
-        m_model->setProperty(name, value.toString());
+        m_model->setProperty(name, value);
     }
 
     m_model->save();
