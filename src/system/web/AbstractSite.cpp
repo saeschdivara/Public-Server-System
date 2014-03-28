@@ -61,9 +61,10 @@ void AbstractSite::addView(const QString &urlRegex, View::ViewInterface *view)
     d->views.append(qMakePair<QString, View::ViewInterface *>(urlRegex, view));
 }
 
-View::ViewInterface *AbstractSite::view(const QString &urlPath) const
+int AbstractSite::findView(const QString &urlPath) const
 {
     Q_D(const AbstractSite);
+    int i = 0;
     for( QPair<QString, View::ViewInterface *> pair : d->views ) {
         QString urlRegex = pair.first;
 
@@ -71,11 +72,46 @@ View::ViewInterface *AbstractSite::view(const QString &urlPath) const
         QRegularExpressionMatch match = regex.match(urlPath);
         bool hasMatch = match.hasMatch(); // true
         if ( hasMatch ) {
-            return pair.second;
+            return  i;
         }
+
+        i++;
     }
 
     throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("Not found"));
+}
+
+QHash<QString, QString> AbstractSite::urlParameters(const int index, const QString &urlPath) const
+{
+    Q_D(const AbstractSite);
+    QPair<QString, View::ViewInterface *> pair = d->views.at(index);
+    QString urlRegex = pair.first;
+
+    QRegularExpression regex(urlRegex);
+    QRegularExpressionMatch match = regex.match(urlPath);
+
+    QHash<QString, QString> parameters;
+
+    if ( match.hasMatch() ) {
+        const int total = match.lastCapturedIndex();
+        const QStringList capturedNames =  match.capturedTexts();
+
+        for (int i = 0; i < total; ++i) {
+            QString nameCaptured = capturedNames.at(i);
+            QString valueCaptured = match.captured(i);
+
+            parameters.insert(nameCaptured, valueCaptured);
+        }
+    }
+
+    return parameters;
+}
+
+View::ViewInterface *AbstractSite::view(const int index) const
+{
+    Q_D(const AbstractSite);
+    QPair<QString, View::ViewInterface *> pair = d->views.at(index);
+    return pair.second;
 }
 
 Grantlee::Engine *AbstractSite::templateEngine() const

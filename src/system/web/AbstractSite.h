@@ -49,7 +49,9 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractSite : public QObject
         virtual ~AbstractSite();
 
         void addView(const QString & urlRegex, View::ViewInterface * view);
-        View::ViewInterface * view(const QString & urlPath) const;
+        int findView(const QString & urlPath) const;
+        QHash<QString, QString> urlParameters(const int index, const QString & urlPath) const;
+        View::ViewInterface * view(const int index) const;
 
         Grantlee::Engine * templateEngine() const;
 

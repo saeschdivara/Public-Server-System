@@ -47,7 +47,27 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ViewInterface
         virtual void render(QTextStream & stream,
                             Grantlee::Engine * templateEngine,
                             Grantlee::Context * requestContext,
-                            QtWebRequest * request) = 0;
+                            QtWebRequest * request)
+        {
+            Q_UNUSED(stream)
+            Q_UNUSED(templateEngine)
+            Q_UNUSED(requestContext)
+            Q_UNUSED(request)
+        }
+
+        virtual void render(QTextStream &stream,
+                            Grantlee::Engine *templateEngine,
+                            Grantlee::Context *requestContext,
+                            QtWebRequest *request,
+                            QHash<QString, QString> requestParameters)
+        {
+            Q_UNUSED(stream)
+            Q_UNUSED(templateEngine)
+            Q_UNUSED(requestContext)
+            Q_UNUSED(request)
+            Q_UNUSED(requestParameters)
+        }
+
 };
 
 void render(const QString & templateName,

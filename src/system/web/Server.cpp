@@ -148,24 +148,24 @@ bool Server::listenOnSecureConnections(const QHostAddress &address, quint16 port
     }
 
     return isListening;
-//    if (!d->secureServer)
-//        d->secureServer = new Tufao::HttpsServer(this);
+    //    if (!d->secureServer)
+    //        d->secureServer = new Tufao::HttpsServer(this);
 
-//    QObject::connect( d->secureServer, &Tufao::HttpsServer::requestReady,
-//                      this, &Server::clientConnectionReady
-//                      );
+    //    QObject::connect( d->secureServer, &Tufao::HttpsServer::requestReady,
+    //                      this, &Server::clientConnectionReady
+    //                      );
 
-//    // Set the necessary things before listening
-//    d->secureServer->setPrivateKey(d->privateKey);
-//    d->secureServer->setLocalCertificate(d->certificate);
+    //    // Set the necessary things before listening
+    //    d->secureServer->setPrivateKey(d->privateKey);
+    //    d->secureServer->setLocalCertificate(d->certificate);
 
-//    bool isListening = d->secureServer->listen(address, port);
+    //    bool isListening = d->secureServer->listen(address, port);
 
-//    if (!isListening) {
-//            qWarning() << "The server couldn't listen";
-//        }
+    //    if (!isListening) {
+    //            qWarning() << "The server couldn't listen";
+    //        }
 
-//    return isListening;
+    //    return isListening;
 }
 
 void Server::setPrivateKey(const QSslKey &key)
@@ -204,39 +204,49 @@ void Server::onClientReady(QtWebRequest *request, QtWebResponse *response)
         if (!site) throw Core::Exception(Core::ErrorCode::NotFound, QStringLiteral("The website doesn't exists"));
 
         if (urlPath.startsWith(QLatin1Char('/') + d->staticFilesPath + QLatin1Char('/'))) {
-                serveStaticFile(request,
-                                response,
-                                d->diskStaticFilesPath,
-                                d->staticFilesPath);
-            }
+            serveStaticFile(request,
+                            response,
+                            d->diskStaticFilesPath,
+                            d->staticFilesPath);
+        }
         else if (urlPath.startsWith(QLatin1Char('/') + d->mediaFilesPath + QLatin1Char('/'))) {
-                serveStaticFile(request,
-                                response,
-                                d->diskMediaFilesPath,
-                                d->mediaFilesPath);
-            }
+            serveStaticFile(request,
+                            response,
+                            d->diskMediaFilesPath,
+                            d->mediaFilesPath);
+        }
         else {
-                View::ViewInterface * view = site->view(urlPath);
+            int index = site->findView(urlPath);
+            View::ViewInterface * view = site->view(index);
+            QHash<QString, QString> urlParameters = site->urlParameters(index, urlPath);
 
-                QBuffer buffer;
-                buffer.open(QIODevice::ReadWrite);
+            QBuffer buffer;
+            buffer.open(QIODevice::ReadWrite);
 
-                QTextStream stream(&buffer);
+            QTextStream stream(&buffer);
 
-                stream.setCodec(QTextCodec::codecForName("UTF-8"));
+            stream.setCodec(QTextCodec::codecForName("UTF-8"));
 
-                Grantlee::Context context = d->getSessionContext(request);
-                context.setUrlType(Grantlee::Context::RelativeUrls);
+            Grantlee::Context context = d->getSessionContext(request);
+            context.setUrlType(Grantlee::Context::RelativeUrls);
+
+            if ( urlParameters.isEmpty() )
                 view->render(stream, site->templateEngine(), &context, request);
+            else
+                view->render(stream,
+                             site->templateEngine(),
+                             &context,
+                             request,
+                             urlParameters);
 
-                buffer.close();
+            buffer.close();
 
-                QByteArray renderedView = buffer.data();
+            QByteArray renderedView = buffer.data();
 
-                response->setStatus(QtWebResponse::StatusCode::OK, "OK");
-                response->write(renderedView);
-                response->end();
-            }
+            response->setStatus(QtWebResponse::StatusCode::OK, "OK");
+            response->write(renderedView);
+            response->end();
+        }
     }
     catch(Core::Exception ex) {
         response->setStatus(QtWebResponse::StatusCode::NOT_FOUND, ex.what());
