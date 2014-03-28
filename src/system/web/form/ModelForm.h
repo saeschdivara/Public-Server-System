@@ -48,6 +48,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
 
         bool isValid() const;
 
+        void syncModel();
         void save();
 
         QString toString() const;
@@ -56,6 +57,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT ModelForm
         Model::AbstractModel * m_model;
         QHash<QByteArray, QByteArray> * m_post;
         QList<AbstractFormField *> m_fields;
+        bool m_isModelSynced = false;
 };
 
 ModelForm::ModelForm(Model::AbstractModel *model, QHash<QByteArray, QByteArray> *post) :
@@ -105,8 +107,7 @@ bool ModelForm::isValid() const
     return true;
 }
 
-
-void ModelForm::save()
+void ModelForm::syncModel()
 {
     for ( AbstractFormField * field : m_fields ) {
         // To which the QString is conerted is essentiel if the whole thing works
@@ -114,6 +115,16 @@ void ModelForm::save()
         QVariant value = field->value();
 
         m_model->setProperty(name, value);
+    }
+
+    m_isModelSynced = true;
+}
+
+
+void ModelForm::save()
+{
+    if ( !m_isModelSynced ) {
+        syncModel();
     }
 
     m_model->save();
