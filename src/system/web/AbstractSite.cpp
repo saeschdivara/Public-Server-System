@@ -93,12 +93,13 @@ QHash<QString, QString> AbstractSite::urlParameters(const int index, const QStri
     QHash<QString, QString> parameters;
 
     if ( match.hasMatch() ) {
-        const int total = match.lastCapturedIndex();
-        const QStringList capturedNames =  match.capturedTexts();
+        const QStringList capturedNames = match.regularExpression().namedCaptureGroups();
+        const int total = capturedNames.size();
 
-        for (int i = 0; i < total; ++i) {
+        // Names has the first one as empty (whole match)
+        for (int i = 1; i < total; ++i) {
             QString nameCaptured = capturedNames.at(i);
-            QString valueCaptured = match.captured(i);
+            QString valueCaptured = match.captured(nameCaptured);
 
             parameters.insert(nameCaptured, valueCaptured);
         }
