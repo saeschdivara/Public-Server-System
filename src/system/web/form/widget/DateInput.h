@@ -19,7 +19,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT DateInput : public WidgetInterface
 {
     public:
         virtual QString toString(const QString & name, const QVariant & value) const {
-            return QString("<input type=\"text\" name=\"m_%1_field\" value=\"%2\" />").arg(name, value.toString());
+            return QString("<input type=\"date\" name=\"m_%1_field\" value=\"%2\" />").arg(name, value.toString());
         }
 };
 
