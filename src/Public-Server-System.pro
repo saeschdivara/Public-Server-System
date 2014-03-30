@@ -73,7 +73,9 @@ HEADERS += \
     system/web/form/widget/FileInput.h \
     system/db/DatabaseManager.h \
     system/web/WebLogger.h \
-    system/web/model/logger/WebLog.h
+    system/web/model/logger/WebLog.h \
+    system/web/form/DateField.h \
+    system/web/form/widget/DateInput.h
 
 SOURCES += \
     system/core/System.cpp \
@@ -94,6 +96,7 @@ SOURCES += \
     system/web/form/ImageField.cpp \
     system/db/DatabaseManager.cpp \
     system/web/WebLogger.cpp \
-    system/web/model/logger/WebLog.cpp
+    system/web/model/logger/WebLog.cpp \
+    system/web/form/DateField.cpp
 
 OTHER_FILES += \
