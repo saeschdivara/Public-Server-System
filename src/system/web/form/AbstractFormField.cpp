@@ -58,6 +58,11 @@ QVariant AbstractFormField::value() const
     return d->fieldValue;
 }
 
+QVariant AbstractFormField::convert(const QByteArray &value) const
+{
+    return QVariant(value);
+}
+
 void AbstractFormField::setValue(QVariant val)
 {
     Q_D(AbstractFormField);

@@ -51,6 +51,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
         bool isValid() const;
 
         QVariant value() const;
+        virtual QVariant convert(const QByteArray & value) const;
         void setValue(QVariant val);
 
         QString name() const;
