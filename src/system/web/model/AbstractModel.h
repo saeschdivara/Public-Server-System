@@ -66,8 +66,8 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractModel : public QObject
         Form::AbstractFormField * field(const QString & referencingPropertyName, const QMetaObject &fieldClassObj, const QString & description);
 
         template<typename T>
-        Form::AbstractFormField * field(const QString & referencingPropertyName, const QString & description) {
-            return field(referencingPropertyName, T::staticMetaObject, description);
+        T * field(const QString & referencingPropertyName, const QString & description) {
+            return qobject_cast<T *>(field(referencingPropertyName, T::staticMetaObject, description));
         }
 
     private:
