@@ -88,7 +88,9 @@ QList<AbstractFormField *> ModelForm::getAllFields() const
 
             // Only if the field is in the post
             if (m_post->contains(widgetName.toUtf8())) {
-                field->setValue(m_post->value(widgetName.toUtf8()));
+                QByteArray value = m_post->value(widgetName.toUtf8());
+                QVariant convertedValue = field->convert(value);
+                field->setValue(convertedValue);
             }
 
             fields.append(field);

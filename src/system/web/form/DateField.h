@@ -18,6 +18,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT DateField : public AbstractFormField
     public:
         Q_INVOKABLE explicit DateField(const QString & name, const QString & description, QObject *parent = 0);
 
+        virtual QVariant convert(const QByteArray & value) const;
         virtual QString toString() const;
         virtual bool hasFile() const;
 

@@ -4,6 +4,8 @@
 
 #include "widget/DateInput.h"
 
+#include <QtCore/QDate>
+
 namespace PublicServerSystem
 {
 namespace Web
@@ -22,6 +24,12 @@ DateField::DateField(const QString &name, const QString &description, QObject *p
     Q_D(DateField);
 
     d->widget = new Widget::DateInput;
+}
+
+QVariant DateField::convert(const QByteArray &value) const
+{
+    QString stringValue = value;
+    return QDate::fromString(stringValue, Qt::ISODate);
 }
 
 QString DateField::toString() const
