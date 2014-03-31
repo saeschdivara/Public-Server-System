@@ -55,6 +55,7 @@ class PUBLICSERVERSYSTEMSHARED_EXPORT AbstractFormField : public QObject
         void setValue(QVariant val);
 
         QString name() const;
+        QByteArray fieldWidgetName() const;
 
         QString description() const;
 

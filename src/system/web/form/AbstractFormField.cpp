@@ -75,6 +75,16 @@ QString AbstractFormField::name() const
     return d->fieldName;
 }
 
+QByteArray AbstractFormField::fieldWidgetName() const
+{
+    Q_D(const AbstractFormField);
+
+    QString imageFieldName("m_%1_field");
+    QByteArray fieldNameBytes = imageFieldName.arg(d->fieldName).toUtf8();
+
+    return fieldNameBytes;
+}
+
 QString AbstractFormField::description() const
 {
     Q_D(const AbstractFormField);
